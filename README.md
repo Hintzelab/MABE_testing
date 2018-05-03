@@ -48,5 +48,5 @@ cd mabe_testing
 
 Test your `mymabe` build against development
 ```
-python mtest.py -c development
+python mtest.py development
 ```
