@@ -1,5 +1,5 @@
 # MABE_testing
-automated executable-level functional testing
+automated executable-level functional and consistency testing
 `mtest.py`
 
 ### Description
