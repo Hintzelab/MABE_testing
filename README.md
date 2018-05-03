@@ -24,13 +24,16 @@ version of MABE with the older version of MABE.
 
 ### Usage
 ```
-python mtest.py -h
+$ python mtest.py -h
+usage: mtest.py [-h] [-f] [branch] [commit]
+
+positional arguments:
+  branch
+  commit
 
 optional arguments:
-  -h, --help            show this help message and exit
-  -c COMPARE, --compare COMPARE
-                        branch or commit hash to compare.                                                                            
-  -f, --force           force new download and compile
+  -h, --help   show this help message and exit
+  -f, --force  force new download and compile
 ```
 
 ### Example
