@@ -20,7 +20,7 @@ Test functions will be run in the order they are
 specified, allowing setup and teardown functions,
 if needed. A helper function `ABdiff(filename)` is
 included that will compare the same file in your
-version of MABE with the older version of MABe.
+version of MABE with the older version of MABE.
 
 ### Usage
 ```
