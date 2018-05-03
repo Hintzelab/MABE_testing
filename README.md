@@ -43,6 +43,7 @@ Download MABE_testing into your MABE repo
 git clone https://github.com/hintzelab/mabe mymabe
 cd mymabe
 git clone https://github.com/hintzelab/mabe_testing
+cd mabe_testing
 ```
 
 Test your `mymabe` build against development
