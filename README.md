@@ -2,6 +2,9 @@
 automated executable-level functional and consistency testing
 `mtest.py`
 
+## WIP
+This is very much a work-in-progress at the moment as we decide the best way to include all relevant modes of testing.
+
 ### Description
 During MABE development we want to ensure that
 we do not inadvertently change (or break) the
