@@ -10,6 +10,7 @@ This is very much a work-in-progress at the moment as we decide the best way to 
 - [ ] Capture stdout to a standard filename ex: stdout.txt
 - [ ] Capture stderr to a standard filename ex: stderr.txt
 - [ ] Modify ABDiff to accept a path (and path-sep-agnostic)
+- [ ] Add ability to specify only specific tests ex: pass 'defaults' for test_defaults.py to be run
 
 ### Description
 During MABE development we want to ensure that
