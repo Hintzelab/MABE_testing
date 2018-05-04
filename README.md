@@ -5,6 +5,12 @@ automated executable-level functional and consistency testing
 ## WIP
 This is very much a work-in-progress at the moment as we decide the best way to include all relevant modes of testing.
 
+### To Do
+- [ ] Create convenience utility to run baseline or testline mabe with arguments
+- [ ] Capture stdout to a standard filename ex: stdout.txt
+- [ ] Capture stderr to a standard filename ex: stderr.txt
+- [ ] Modify ABDiff to accept a path (and path-sep-agnostic)
+
 ### Description
 During MABE development we want to ensure that
 we do not inadvertently change (or break) the
