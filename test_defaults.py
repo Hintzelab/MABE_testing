@@ -1,21 +1,20 @@
 import os
 import subprocess
-from utils.helpers import test_repo_name, product, dir_base, dir_test, path_base, path_test
+from utils.helpers import test_repo_name, product, basename_base, basename_test, path_base_exe, path_test_exe, cmd
 from utils.helpers import ABdiff
 
 ## all tests run in order and are run if they begin with 'test_'
-
 def test_startup():
     ## generate cfg (have to 'cd' there, because mabe '-s' ignores 'GLOBAL-outputDirectory' setting)
-    os.chdir(dir_base)
-    subprocess.run(product+" -s", stdout=subprocess.DEVNULL)
+    os.chdir(basename_base)
+    subprocess.run(cmd("./{exe} -s".format(exe=product)), stdout=subprocess.DEVNULL)
     os.chdir('..')
-    os.chdir(dir_test)
-    subprocess.run(product+" -s", stdout=subprocess.DEVNULL)
+    os.chdir(basename_test)
+    subprocess.run(cmd("./{exe} -s".format(exe=product)), stdout=subprocess.DEVNULL)
     os.chdir('..')
     ## run mabe with defaults
-    subprocess.run(path_base+" -p GLOBAL-outputDirectory "+dir_base, stdout=subprocess.DEVNULL)
-    subprocess.run(path_test+" -p GLOBAL-outputDirectory "+dir_test, stdout=subprocess.DEVNULL)
+    subprocess.run(cmd("{exe} -p GLOBAL-outputDirectory {path}".format(exe=path_base_exe, path=basename_base)), stdout=subprocess.DEVNULL)
+    subprocess.run(cmd("{exe} -p GLOBAL-outputDirectory {path}".format(exe=path_test_exe, path=basename_test)), stdout=subprocess.DEVNULL)
 
 def test_compare_csv_files():
     ABdiff('max.csv')
