@@ -32,6 +32,12 @@ if needed. A helper function `ABdiff(filename)` is
 included that will compare the same file in your
 version of MABE with the older version of MABE.
 
+### Requirements
+- make
+- gcc compiler >= 6.2
+- python3
+- git
+
 ### Usage
 ```
 $ python mtest.py -h
