@@ -4,7 +4,8 @@ from utils import pyreq
 pyreq.require('difflib')
 import difflib
 
-this_repo_name = os.path.basename(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
+#this_repo_name = os.path.basename(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
+this_repo_path = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 
 if platform.system() == 'Windows':
     product = 'mabe.exe'

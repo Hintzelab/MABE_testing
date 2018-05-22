@@ -1,6 +1,6 @@
 import os
 import subprocess
-from utils.helpers import this_repo_name, product, basename_base, basename_test, path_base_exe, path_test_exe
+from utils.helpers import this_repo_path, product, basename_base, basename_test, path_base_exe, path_test_exe
 from utils.helpers import ABdiff, runCmdAndHideOutput, runCmdAndShowOutput
 
 ## all tests run in order and are run if they begin with 'test_'
