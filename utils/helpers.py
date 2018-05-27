@@ -1,4 +1,4 @@
-import platform, subprocess, os
+import platform, subprocess, os, glob
 import shutil, stat # for file copy w/ permissions
 from utils import pyreq
 pyreq.require('difflib')
@@ -25,6 +25,11 @@ def copyfileAndPermissions(source,destination): ## uses shutil, stat, and os to 
     st = os.stat(source)
     os.chown(destination, st[stat.ST_UID], st[stat.ST_GID])
     os.chmod(destination, st[stat.ST_MODE])
+
+def rmAllDiffFiles(): ## removes all diff files
+    files = glob.glob(os.path.join(this_repo_path,'diff-*'))
+    for eachfile in files:
+        os.remove(eachfile)
 
 def ABdiff(filename): ## helper fn diffing 2 files with the same name: "diff base/filename test/filename
     with open(os.path.join(basename_base,filename)) as a, open(os.path.join(basename_test,filename)) as b:
