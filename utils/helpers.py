@@ -62,10 +62,9 @@ def diff(file1, file2, outfilename): ## helper fn diffing 2 arbitrary files
         numDiffLines = len(difflines_machinereadable)
         numDiffs = [line[0] in ['+','-'] for line in difflines].count(True) ## counts lines that begin with + or -
         if numDiffLines != 0:
-            outfilename
             with open(os.path.abspath(outfilename), 'w') as outfile:
                 outfile.write(''.join(difflines))
-        assert numDiffLines == 0, "{a} and {b} differ with {ndiffs} differences. see diff-{name}".format(a=file1, b=file2, ndiffs=str(numDiffs), name=filename )
+        assert numDiffLines == 0, "{a} and {b} differ with {ndiffs} differences. see diff-{name}".format(a=file1, b=file2, ndiffs=str(numDiffs), name=outfilename )
 
 def ABdiff(filename): ## helper fn diffing 2 files with the same name: "diff baseline/filename testline/filename"
     with open(os.path.join(dirname_baseline,filename)) as a, open(os.path.join(dirname_testline,filename)) as b:
