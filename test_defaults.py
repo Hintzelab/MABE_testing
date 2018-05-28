@@ -1,7 +1,7 @@
 import os
 import subprocess
 from utils.helpers import this_repo_path, mabe, dirname_baseline, dirname_testline, path_baseline_exe, path_testline_exe
-from utils.helpers import cd, ABdiff, runCmdAndHideOutput, runCmdAndShowOutput, runCmdAndSaveOutput
+from utils.helpers import cd, ABdiff, runCmdAndHideOutput, runCmdAndShowOutput, runCmdAndSaveOutput, getFileContents
 
 ##
 ## all tests run IN ORDER OF DEFINITION and are run if they begin with 'test_'
@@ -55,6 +55,16 @@ def test_lod_organisms_csv():
 ## poploader
 def test_poploader():
     ABdiff('population_loader.plf')
+
+## version output
+def test_version_baseline():
+    result = getFileContents(dirname_baseline+'screen-version')
+    line1=result[0]
+    assert len(line1) != 1, "version information not found but should have been included in the build"
+def test_version_baseline():
+    result = getFileContents(dirname_testline+'screen-version')
+    line1=result[0]
+    assert len(line1) != 1, "version information not found but should have been included in the build"
 
 def test_shutdown():
     pass
