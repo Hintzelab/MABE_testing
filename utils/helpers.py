@@ -34,6 +34,12 @@ def rmAllDiffFiles(): ## removes all diff files
     for eachfile in files:
         os.remove(eachfile)
 
+def getFileContents(filename): ## helper fn to load a file and return contents as list
+    contents=[]
+    with open(os.path.abspath(filename)) as infile:
+        contents=infile.readlines()
+    return contents
+
 def ABdiff(filename): ## helper fn diffing 2 files with the same name: "diff baseline/filename testline/filename"
     with open(os.path.join(dirname_baseline,filename)) as a, open(os.path.join(dirname_testline,filename)) as b:
         contentsA = a.readlines()
