@@ -6,10 +6,10 @@ automated executable-level functional and consistency testing
 This is very much a work-in-progress at the moment as we decide the best way to include all relevant modes of testing.
 
 ### To Do
-- [ ] Create convenience utility to run baseline or testline mabe with arguments
-- [ ] Capture stdout to a standard filename ex: stdout.txt
-- [ ] Capture stderr to a standard filename ex: stderr.txt
-- [ ] Modify ABDiff to accept a path (and path-sep-agnostic)
+- [x] Create convenience utility to run baseline or testline mabe with arguments
+- [x] Capture stdout to a standard filename ex: stdout.txt
+- [x] Capture stderr to a standard filename ex: stderr.txt
+- [x] Modify ABDiff to accept a path (and path-sep-agnostic)
 - [x] Add ability to specify only specific tests ex: pass 'defaults' for test_defaults.py to be run
 
 ### Description
@@ -35,7 +35,7 @@ version of MABE with the older version of MABE.
 ### Requirements
 - make
 - gcc compiler >= 6.2
-- python3
+- python3 >= 3.5
 - git
 
 ### Usage
