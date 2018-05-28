@@ -8,17 +8,17 @@ import difflib
 this_repo_path = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 
 if platform.system() == 'Windows': ## mtest can still be run on windows if you have the exes already compiled in the right places (baseline/ and testline/)
-    product = 'mabe.exe'
+    mabe = 'mabe.exe'
 else:
-    product = 'mabe'
+    mabe = 'mabe'
 
 ## TODO: add ability to pass arguments to mbuild
 
 basename_base = 'baseline/' ## dirname for old baseline build (used to compare new code)
 basename_test = 'testline/' ## dirname for new build to compare with old baseline
 
-path_base_exe = os.path.join(basename_base,product)
-path_test_exe = os.path.join(basename_test,product)
+path_base_exe = os.path.join(basename_base,mabe)
+path_test_exe = os.path.join(basename_test,mabe)
 
 def cd(path): ## alias for os.chdir, but also platforms the path
     os.chdir( os.path.abspath(path) )

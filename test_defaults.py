@@ -1,6 +1,6 @@
 import os
 import subprocess
-from utils.helpers import this_repo_path, product, basename_base, basename_test, path_base_exe, path_test_exe
+from utils.helpers import this_repo_path, mabe, basename_base, basename_test, path_base_exe, path_test_exe
 from utils.helpers import cd, ABdiff, runCmdAndHideOutput, runCmdAndShowOutput, runCmdAndSaveOutput
 
 ##
@@ -13,13 +13,13 @@ def test_startup():
     ## generate cfg (have to 'cd' there, because mabe '-s' ignores 'GLOBAL-outputDirectory' setting)
     ## and run mabe with defaults
     cd(basename_base)
-    runCmdAndSaveOutput( "./{exe} -s".format(exe=product), filename='screen-settings' )
-    runCmdAndSaveOutput( "./{exe}".format(exe=product), filename='screen-simulation' )
+    runCmdAndSaveOutput( "./{exe} -s".format(exe=mabe), filename='screen-settings' )
+    runCmdAndSaveOutput( "./{exe}".format(exe=mabe), filename='screen-simulation' )
     cd('..')
 
     cd(basename_test)
-    runCmdAndSaveOutput( "./{exe} -s".format(exe=product), filename='screen-settings' )
-    runCmdAndSaveOutput( "./{exe}".format(exe=product), filename='screen-simulation')
+    runCmdAndSaveOutput( "./{exe} -s".format(exe=mabe), filename='screen-settings' )
+    runCmdAndSaveOutput( "./{exe}".format(exe=mabe), filename='screen-simulation')
     cd('..')
     ## FYI, could have done it the following way if we were up one dir in mabe_testing
     #runCmdAndSaveOutput( "{exe} -p GLOBAL-outputDirectory {path}".format(exe=path_base_exe, path=basename_base), filename=basename_base+'screen-simulation' )
