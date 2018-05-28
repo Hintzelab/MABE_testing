@@ -29,6 +29,15 @@ def copyfileAndPermissions(source,destination): ## uses shutil, stat, and os to 
     os.chown(destination, st[stat.ST_UID], st[stat.ST_GID])
     os.chmod(destination, st[stat.ST_MODE])
 
+def movefile(source,destination): ## alias for shutil.move
+    shutil.move(source,destination)
+def movefileSwap(file1,file2): ## swaps two files
+    file1 = os.path.abspath(file1)
+    file2 = os.path.abspath(file2)
+    shutil.move(file1,'.tempforfilemove')
+    shutil.move(file2,file1)
+    shutil.move('.tempforfilemove',file2)
+
 def rmAllDiffFiles(): ## removes all diff files
     files = glob.glob(os.path.join(this_repo_path,'diff-*'))
     for eachfile in files:
@@ -39,6 +48,20 @@ def getFileContents(filename): ## helper fn to load a file and return contents a
     with open(os.path.abspath(filename)) as infile:
         contents=infile.readlines()
     return contents
+
+def diff(file1, file2, outfilename): ## helper fn diffing 2 arbitrary files
+    with open(os.path.abspath(file1)) as a, open(os.path.abspath(file1)) as b:
+        contentsA = a.readlines()
+        contentsB = b.readlines()
+        difflines = list(difflib.ndiff(contentsA, contentsB)) ## perform diff and return human-readable format
+        difflines_machinereadable = list(difflib.context_diff(contentsA, contentsB)) ## perform diff and return machine-readable format
+        numDiffLines = len(difflines_machinereadable)
+        numDiffs = [line[0] in ['+','-'] for line in difflines].count(True) ## counts lines that begin with + or -
+        if numDiffLines != 0:
+            outfilename
+            with open(os.path.abspath(outfilename), 'w') as outfile:
+                outfile.write(''.join(difflines))
+        assert numDiffLines == 0, "{a} and {b} differ with {ndiffs} differences. see diff-{name}".format(a=file1, b=file2, ndiffs=str(numDiffs), name=filename )
 
 def ABdiff(filename): ## helper fn diffing 2 files with the same name: "diff baseline/filename testline/filename"
     with open(os.path.join(dirname_baseline,filename)) as a, open(os.path.join(dirname_testline,filename)) as b:
