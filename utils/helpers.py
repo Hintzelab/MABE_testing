@@ -40,5 +40,8 @@ def ABdiff(filename): ## helper fn diffing 2 files with the same name: "diff bas
 
 def runCmdAndHideOutput(str): ## calls subprocess.run(str,stdout=subprocess.DEVNULL, shell=True)
     subprocess.run(str, stdout=subprocess.DEVNULL, shell=True)
+def runCmdAndReturnOutput(str): ## calls subprocess.run(str, shell=True, check=True) and returns result
+    resultObj = subprocess.run(str, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    return resultObj.stdout.decode()+'\n'+resultObj.stderr.decode()
 def runCmdAndShowOutput(str): ## calls subprocess.run(str, shell=True, check=True)
-    print( subprocess.run(str, shell=True, check=True) ,flush=True)
+    print( runCmdAndReturnOutput(str), flush=True)
