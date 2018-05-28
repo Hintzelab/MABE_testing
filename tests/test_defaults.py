@@ -10,25 +10,28 @@ from utils.helpers import cd, ABdiff, runCmdAndHideOutput, runCmdAndShowOutput, 
 
 @pytest.fixture ## indicates this is the constructor fn for all the test fns in this module
 def ctx(): ## create a context for all the tests - you could potentially use this to pass an obj to all test fns
-    ## generate cfg (have to 'cd' there, because mabe '-s' ignores 'GLOBAL-outputDirectory' setting)
-    ## and run mabe with defaults
-    dirs = [dirname_baseline, dirname_testline]
-    for eachdir in dirs: ## loop through each of baseline and testline and generate the files for later diffing
-        cd(eachdir)
-        runCmdAndSaveOutput( "./{exe} -s".format(exe=mabe), filename='screen-settings' )
-        runCmdAndSaveOutput( "./{exe} -h".format(exe=mabe), filename='screen-help' )
-        runCmdAndSaveOutput( "./{exe} -l".format(exe=mabe), filename='screen-poploader' )
-        runCmdAndSaveOutput( "./{exe} -v".format(exe=mabe), filename='screen-version' )
-        runCmdAndSaveOutput( "./{exe}".format(exe=mabe), filename='screen-simulation' )
-        cd('..') ## could also have done cd(this_repo_path)
-    ## FYI, could have done it the following way if we were up one dir in mabe_testing
-    #runCmdAndSaveOutput( "{exe} -p GLOBAL-outputDirectory {path}".format(exe=path_baseline_exe, path=dirname_baseline), filename=dirname_baseline+'screen-simulation' )
+    if not ctx.ran: ## prevents reinit before each and every test fn in this module
+        ## generate cfg (have to 'cd' there, because mabe '-s' ignores 'GLOBAL-outputDirectory' setting)
+        ## and run mabe with defaults
+        dirs = [dirname_baseline, dirname_testline]
+        for eachdir in dirs: ## loop through each of baseline and testline and generate the files for later diffing
+            cd(eachdir)
+            runCmdAndSaveOutput( "./{exe} -s".format(exe=mabe), filename='screen-settings' )
+            runCmdAndSaveOutput( "./{exe} -h".format(exe=mabe), filename='screen-help' )
+            runCmdAndSaveOutput( "./{exe} -l".format(exe=mabe), filename='screen-poploader' )
+            runCmdAndSaveOutput( "./{exe} -v".format(exe=mabe), filename='screen-version' )
+            runCmdAndSaveOutput( "./{exe}".format(exe=mabe), filename='screen-simulation' )
+            cd('..') ## could also have done cd(this_repo_path)
+        ## FYI, could have done it the following way if we were up one dir in mabe_testing
+        #runCmdAndSaveOutput( "{exe} -p GLOBAL-outputDirectory {path}".format(exe=path_baseline_exe, path=dirname_baseline), filename=dirname_baseline+'screen-simulation' )
+        ctx.ran = True
 
     yield None ## could have actually passed a context object here to all the test fns
     ##
     ## teardown happens after the last test in the module finishes
     ##
     return
+ctx.ran = False
 
 ## testing consistency of screen output
 def test_screen_help(ctx):
