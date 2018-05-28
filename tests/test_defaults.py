@@ -40,7 +40,7 @@ def test_screen_run(ctx):
     ABdiff('screen-settings')
 def test_screen_simulation(ctx):
     ABdiff('screen-simulation')
-def test_screen_poploader(ctx):
+def test_screen_plf_generation(ctx):
     ABdiff('screen-poploader')
 
 ## cfg
@@ -62,7 +62,7 @@ def test_lod_organisms_csv(ctx):
     ABdiff('LOD_organisms.csv')
 
 ## poploader
-def test_poploader(ctx):
+def test_plf(ctx):
     ABdiff('population_loader.plf')
 
 ## version output
