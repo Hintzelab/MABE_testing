@@ -19,10 +19,7 @@ def ctx(): ## create a context for all the tests - you could potentially use thi
             cd(eachdir)
             runCmdAndSaveOutput( "./{exe} -l".format(exe=mabe), filename='screen-plf' )
             runCmdAndHideOutput( "./{exe} -p GLOBAL-updates 10 ARCHIVIST_LODWAP-organismsSequence :10 ARCHIVIST_LODWAP-terminateAfter 0 ARCHIVIST_DEFAULT-writeSnapshotDataFiles 1 ARCHIVIST_DEFAULT-writeSnapshotOrganismsFiles 1 ARCHIVIST_DEFAULT-snapshotOrganismsSequence :10".format(exe=mabe)) ## generate snapshot_organisms_100.csv
-            #runCmdAndSaveOutput( "./{exe} -p GLOBAL-initPop \"MASTER = snapshot_organisms_100.csv\"".format(exe=mabe))
             cd('..') ## could also have done cd(this_repo_path)
-        ## FYI, could have done it the following way if we were up one dir in mabe_testing
-        #runCmdAndSaveOutput( "{exe} -p GLOBAL-outputDirectory {path}".format(exe=path_baseline_exe, path=dirname_baseline), filename=dirname_baseline+'screen-simulation' )
         ctx.ran = True
 
     yield None ## could have actually passed a context object here to all the test fns
