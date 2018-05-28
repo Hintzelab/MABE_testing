@@ -54,7 +54,7 @@ def test_snapshot_organisms_10_loading(ctx):
 ## test reloading of brains and make sure generation 0 saved out is the same as the originally loaded file
 ## NOTE: This isn't working right now, though I'm unsure why.
 @pytest.mark.parametrize('brainType', ['CGP','LSTM','ConstantValues','Wire','Markov'], ids=['CGP','LSTM','ConstantValues','Wire','Markov'])
-def test_reload_CGP(ctx, brainType):
+def test_reload_brain(ctx, brainType):
     for eachdir in [dirname_baseline, dirname_testline]: ## loop through each of baseline and testline and generate the files for later diffing
         cd(eachdir)
         runCmdAndHideOutput( './{exe} -p BRAIN-brainType {brainT} GLOBAL-updates 10 ARCHIVIST_LODWAP-dataSequence :10 ARCHIVIST_LODWAP-organismsSequence :10 ARCHIVIST_LODWAP-terminateAfter 0 ARCHIVIST_DEFAULT-writeSnapshotDataFiles 1 ARCHIVIST_DEFAULT-writeSnapshotOrganismsFiles 1 ARCHIVIST_DEFAULT-snapshotOrganismsSequence :10 ARCHIVIST_DEFAULT-snapshotDataSequence :10'.format(exe=mabe,brainT=brainType)) ## generate snapshot_organisms_10.csv
