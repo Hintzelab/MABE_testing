@@ -5,6 +5,8 @@ from utils.helpers import cd, ABdiff, runCmdAndHideOutput, runCmdAndShowOutput, 
 
 ##
 ## all tests run IN ORDER OF DEFINITION and are run if they begin with 'test_'
+## a test_fn() will fail on first failure and stop testing that test_fn, continuing on to the next test_fn.
+## use `assert condition, "error message"` in a test_fn() to print a useful message on failure
 ##
 
 def test_startup():
