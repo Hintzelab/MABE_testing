@@ -52,3 +52,8 @@ def runCmdAndReturnOutput(str): ## calls subprocess.run(str, shell=True, check=T
     return resultObj.stdout.decode()+'\n'+resultObj.stderr.decode()
 def runCmdAndShowOutput(str): ## calls subprocess.run(str, shell=True, check=True)
     print( runCmdAndReturnOutput(str), flush=True)
+def runCmdAndSaveOutput(str, filename): ## calls subprocess.run(str, shell=True, check=True) and saves result to filename
+    output = runCmdAndReturnOutput(str)
+    platformedPath = os.path.abspath(filename) ## converts possible "adir/afile.txt" to "C:\the\whole\path\adir\afile.txt" if needed
+    with open(platformedPath, 'w') as outfile:
+        outfile.write(output)
