@@ -13,6 +13,7 @@ import git
 import pytest
 
 from utils.helpers import copyfileAndPermissions, this_repo_path, product, basename_base, basename_test, path_base_exe, path_test_exe
+from utils.helpers import runCmdAndShowOutput, runCmdAndReturnOutput, runCmdAndSaveOutput, rmAllDiffFiles
 
 ## TODO: add ability to pass arguments to mbuild
 
@@ -26,6 +27,7 @@ def main():
     os.chdir(this_repo_path)
     compile_default_projects(args)
     subsetTests = '' if not len(args.subset) else '-k "'+args.subset+'"'
+    rmAllDiffFiles()
     pytest.main(shlex.split("-s --color=yes -v --tb=line {subset}".format(subset=subsetTests))) ## invoke pytest (pass a filename here to run test on specific file)
 
 def compile_default_projects(args):
