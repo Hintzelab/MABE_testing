@@ -12,25 +12,28 @@ from utils.helpers import cd, ABdiff, runCmdAndHideOutput, runCmdAndShowOutput, 
 def test_startup():
     ## generate cfg (have to 'cd' there, because mabe '-s' ignores 'GLOBAL-outputDirectory' setting)
     ## and run mabe with defaults
-    cd(dirname_baseline)
-    runCmdAndSaveOutput( "./{exe} -s".format(exe=mabe), filename='screen-settings' )
-    runCmdAndSaveOutput( "./{exe}".format(exe=mabe), filename='screen-simulation' )
-    cd('..') ## could also have done cd(this_repo_path)
-
-    cd(dirname_testline)
-    runCmdAndSaveOutput( "./{exe} -s".format(exe=mabe), filename='screen-settings' )
-    runCmdAndSaveOutput( "./{exe}".format(exe=mabe), filename='screen-simulation')
-    cd('..')
+    dirs = [dirname_baseline, dirname_testline]
+    for eachdir in dirs: ## loop through each of baseline and testline and generate the files for later diffing
+        cd(eachdir)
+        runCmdAndSaveOutput( "./{exe} -s".format(exe=mabe), filename='screen-settings' )
+        runCmdAndSaveOutput( "./{exe} -h".format(exe=mabe), filename='screen-help' )
+        runCmdAndSaveOutput( "./{exe} -l".format(exe=mabe), filename='screen-poploader' )
+        runCmdAndSaveOutput( "./{exe} -v".format(exe=mabe), filename='screen-version' )
+        runCmdAndSaveOutput( "./{exe}".format(exe=mabe), filename='screen-simulation' )
+        cd('..') ## could also have done cd(this_repo_path)
     ## FYI, could have done it the following way if we were up one dir in mabe_testing
     #runCmdAndSaveOutput( "{exe} -p GLOBAL-outputDirectory {path}".format(exe=path_baseline_exe, path=dirname_baseline), filename=dirname_baseline+'screen-simulation' )
 
 ## testing consistency of screen output
+def test_screen_help():
+    ABdiff('screen-help')
 def test_screen_run():
     ABdiff('screen-settings')
 def test_screen_simulation():
     ABdiff('screen-simulation')
+def test_screen_poploader():
+    ABdiff('screen-poploader')
 
-## testing consistency of generated files
 ## cfg
 def test_settings_cfg():
     ABdiff('settings.cfg')
@@ -49,6 +52,9 @@ def test_lod_data_csv():
 def test_lod_organisms_csv():
     ABdiff('LOD_organisms.csv')
 
+## poploader
+def test_poploader():
+    ABdiff('population_loader.plf')
 
 def test_shutdown():
     pass
