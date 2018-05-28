@@ -28,12 +28,12 @@ def main():
     args = parser.parse_args()
     cd(this_repo_path)
     if args.list:
-        pytest.main(shlex.split("-s --color=yes -v --tb=line --collect-only"))
+        pytest.main(shlex.split("--color=yes -v --tb=line --collect-only"))
     else:
         compile_default_projects(args)
         subsetTests = '' if not len(args.subset) else '-k "'+args.subset+'"'
         rmAllDiffFiles()
-        pytest.main(shlex.split("-s --color=yes -v --tb=line {subset}".format(subset=subsetTests))) ## invoke pytest (pass a filename here to run test on specific file)
+        pytest.main(shlex.split("--color=yes --tb=line -v {subset}".format(subset=subsetTests)))
 
 def writeDefaultBuildOptions():
     content = """% World
