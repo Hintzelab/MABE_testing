@@ -8,7 +8,8 @@ from utils.helpers import cd, ABdiff, runCmdAndHideOutput, runCmdAndShowOutput, 
 ## use `assert condition, "error message"` in a test_fn() to print a useful message on failure
 ##
 
-def test_startup():
+@pytest.fixture ## indicates this is the constructor fn for all the test fns in this module
+def ctx(): ## create a context for all the tests - you could potentially use this to pass an obj to all test fns
     ## generate cfg (have to 'cd' there, because mabe '-s' ignores 'GLOBAL-outputDirectory' setting)
     ## and run mabe with defaults
     dirs = [dirname_baseline, dirname_testline]
@@ -23,47 +24,50 @@ def test_startup():
     ## FYI, could have done it the following way if we were up one dir in mabe_testing
     #runCmdAndSaveOutput( "{exe} -p GLOBAL-outputDirectory {path}".format(exe=path_baseline_exe, path=dirname_baseline), filename=dirname_baseline+'screen-simulation' )
 
+    yield None ## could have actually passed a context object here to all the test fns
+    ##
+    ## teardown happens after the last test in the module finishes
+    ##
+    return
+
 ## testing consistency of screen output
-def test_screen_help():
+def test_screen_help(ctx):
     ABdiff('screen-help')
-def test_screen_run():
+def test_screen_run(ctx):
     ABdiff('screen-settings')
-def test_screen_simulation():
+def test_screen_simulation(ctx):
     ABdiff('screen-simulation')
-def test_screen_poploader():
+def test_screen_poploader(ctx):
     ABdiff('screen-poploader')
 
 ## cfg
-def test_settings_cfg():
+def test_settings_cfg(ctx):
     ABdiff('settings.cfg')
-def test_settings_organism_cfg():
+def test_settings_organism_cfg(ctx):
     ABdiff('settings_organism.cfg')
-def test_settings_world_cfg():
+def test_settings_world_cfg(ctx):
     ABdiff('settings_world.cfg')
 
 ## csv
-def test_max_csv():
+def test_max_csv(ctx):
     ABdiff('max.csv')
-def test_pop_csv():
+def test_pop_csv(ctx):
     ABdiff('pop.csv')
-def test_lod_data_csv():
+def test_lod_data_csv(ctx):
     ABdiff('LOD_data.csv')
-def test_lod_organisms_csv():
+def test_lod_organisms_csv(ctx):
     ABdiff('LOD_organisms.csv')
 
 ## poploader
-def test_poploader():
+def test_poploader(ctx):
     ABdiff('population_loader.plf')
 
 ## version output
-def test_version_baseline():
+def test_version_baseline(ctx):
     result = getFileContents(dirname_baseline+'screen-version')
     line1=result[0]
     assert len(line1) != 1, "version information not found but should have been included in the build"
-def test_version_baseline():
+def test_version_baseline(ctx):
     result = getFileContents(dirname_testline+'screen-version')
     line1=result[0]
     assert len(line1) != 1, "version information not found but should have been included in the build"
-
-def test_shutdown():
-    pass
