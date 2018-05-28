@@ -70,7 +70,7 @@ def diff(file1, file2, outfilename): ## helper fn diffing 2 arbitrary files
         if numDiffLines != 0:
             with open(os.path.abspath(outfilename), 'w') as outfile:
                 outfile.write(''.join(difflines))
-        assert numDiffLines == 0, "{a} and {b} differ with {ndiffs} differences. see diff-{name}".format(a=file1, b=file2, ndiffs=str(numDiffs), name=outfilename )
+        assert numDiffLines == 0, thisTestName(ignoreStackDepth=2)+": {ndiffs} changes (see diff-{name})".format(a=file1, b=file2, ndiffs=str(numDiffs), name=outfilename )
 
 def ABdiff(filename): ## helper fn diffing 2 files with the same name: "diff baseline/filename testline/filename"
     with open(os.path.join(dirname_baseline,filename)) as a, open(os.path.join(dirname_testline,filename)) as b:
@@ -84,7 +84,7 @@ def ABdiff(filename): ## helper fn diffing 2 files with the same name: "diff bas
             outfilename = os.path.join(this_repo_path,'diff-'+filename)
             with open(outfilename, 'w') as outfile:
                 outfile.write(''.join(difflines))
-        assert numDiffLines == 0, filename+" differs with {ndiffs} differences. see diff-{name}".format( ndiffs=str(numDiffs), name=filename )
+        assert numDiffLines == 0, thisTestName(ignoreStackDepth=2)+": {ndiffs} changes (see diff-{name})".format( ndiffs=str(numDiffs), name=filename )
 
 def runCmdAndHideOutput(str): ## calls subprocess.run(str,stdout=subprocess.DEVNULL, shell=True)
     subprocess.run(str, stdout=subprocess.DEVNULL, shell=True)
