@@ -16,11 +16,14 @@ def ctx(): ## create a context for all the tests - you could potentially use thi
         ## and run mabe with defaults
         dirs = [dirname_baseline, dirname_testline]
         for eachdir in dirs: ## loop through each of baseline and testline and generate the files for later diffing
+            cd(this_repo_path)
             cd(eachdir)
-            runCmdAndSaveOutput( "./{exe} -s".format(exe=mabe), filename='screen-settings' ) ## save settings to file
+            runStr = "./"+mabe+" -s"
+            runCmdAndSaveOutput( runStr, filename='screen-settings' ) ## save settings to file
             for eachfile in ["settings.cfg", "settings_organism.cfg", "settings_world.cfg"]: ## make a backup of the settings files
                 copyfileAndPermissions(eachfile, eachfile+".bak")
-            runCmdAndSaveOutput( "./{exe} -f settings*.cfg -s".format(exe=mabe), filename='screen-settings-reload' ) ## load and save settings to file
+            runStr = "./"+mabe+" -f settings*.cfg -s"
+            runCmdAndSaveOutput( runStr, filename='screen-settings-reload' ) ## load and save settings to file
             for eachfile in ["settings.cfg", "settings_organism.cfg", "settings_world.cfg"]: ## make a backup of the settings files
                 copyfileAndPermissions(eachfile, eachfile+".bak")
             ##
@@ -54,11 +57,23 @@ def test_settings_world_cfg(ctx):
 
 ## cfg from -f *fg -s
 def test_settings_reload_cfg(ctx):
-    diff(dirname_baseline+'settings.cfg.bak',dirname_baseline+'settings.cfg',outfilename='diff-baseline-settings.cfg')
-    diff(dirname_testline+'settings.cfg.bak',dirname_testline+'settings.cfg',outfilename='diff-testline-settings.cfg')
+    diff(dirname_baseline+'settings.cfg.bak',
+         dirname_baseline+'settings.cfg',
+         outfilename='diff-baseline-settings.cfg')
+    diff(dirname_testline+'settings.cfg.bak',
+         dirname_testline+'settings.cfg',
+         outfilename='diff-testline-settings.cfg')
 def test_settings_reload_organism_cfg(ctx):
-    diff(dirname_baseline+'settings_organism.cfg.bak',dirname_baseline+'settings_organism.cfg',outfilename='diff-baseline-settings_organism.cfg')
-    diff(dirname_testline+'settings_organism.cfg.bak',dirname_testline+'settings_organism.cfg',outfilename='diff-testline-settings_organism.cfg')
+    diff(dirname_baseline+'settings_organism.cfg.bak',
+         dirname_baseline+'settings_organism.cfg',
+         outfilename='diff-baseline-settings_organism.cfg')
+    diff(dirname_testline+'settings_organism.cfg.bak',
+         dirname_testline+'settings_organism.cfg',
+         outfilename='diff-testline-settings_organism.cfg')
 def test_settings_reload_world_cfg(ctx):
-    diff(dirname_baseline+'settings_world.cfg.bak',dirname_baseline+'settings_world.cfg',outfilename='diff-baseline-settings_world.cfg')
-    diff(dirname_testline+'settings_world.cfg.bak',dirname_testline+'settings_world.cfg',outfilename='diff-testline-settings_world.cfg')
+    diff(dirname_baseline+'settings_world.cfg.bak',
+         dirname_baseline+'settings_world.cfg',
+         outfilename='diff-baseline-settings_world.cfg')
+    diff(dirname_testline+'settings_world.cfg.bak',
+         dirname_testline+'settings_world.cfg',
+         outfilename='diff-testline-settings_world.cfg')
