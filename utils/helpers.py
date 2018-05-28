@@ -31,12 +31,16 @@ def copyfileAndPermissions(source,destination): ## uses shutil, stat, and os to 
 
 def movefile(source,destination): ## alias for shutil.move
     shutil.move(source,destination)
+
 def movefileSwap(file1,file2): ## swaps two files
     file1 = os.path.abspath(file1)
     file2 = os.path.abspath(file2)
     shutil.move(file1,'.tempforfilemove')
     shutil.move(file2,file1)
     shutil.move('.tempforfilemove',file2)
+
+def rmfile(filename): ## alias for os.remove()
+    os.remove(os.path.abspath(filename))
 
 def rmAllDiffFiles(): ## removes all diff files
     files = glob.glob(os.path.join(this_repo_path,'diff-*'))
