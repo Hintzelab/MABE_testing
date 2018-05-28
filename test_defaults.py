@@ -15,7 +15,7 @@ def test_startup():
     cd(dirname_baseline)
     runCmdAndSaveOutput( "./{exe} -s".format(exe=mabe), filename='screen-settings' )
     runCmdAndSaveOutput( "./{exe}".format(exe=mabe), filename='screen-simulation' )
-    cd('..')
+    cd('..') ## could also have done cd(this_repo_path)
 
     cd(dirname_testline)
     runCmdAndSaveOutput( "./{exe} -s".format(exe=mabe), filename='screen-settings' )
