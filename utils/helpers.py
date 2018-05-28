@@ -1,4 +1,4 @@
-import platform, subprocess, os, glob
+import platform, subprocess, os, glob, inspect
 import shutil, stat # for file copy w/ permissions
 from utils import pyreq
 pyreq.require('difflib')
@@ -19,6 +19,12 @@ dirname_testline = 'testline/' ## dirname for new build to compare with old base
 
 path_baseline_exe = os.path.join(dirname_baseline,mabe)
 path_testline_exe = os.path.join(dirname_testline,mabe)
+
+def thisTestName(ignoreStackDepth=1):
+    return inspect.stack()[ignoreStackDepth][3]
+
+def buildMessageErrorExpectedWithArgs(*args):
+    return thisTestName(ignoreStackDepth=2)+str(args)+" was supposed to error."
 
 def cd(path): ## alias for os.chdir, but also platforms the path
     os.chdir( os.path.abspath(path) )
