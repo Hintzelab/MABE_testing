@@ -33,10 +33,17 @@ def rmAllDiffFiles(): ## removes all diff files
 
 def ABdiff(filename): ## helper fn diffing 2 files with the same name: "diff base/filename test/filename
     with open(os.path.join(basename_base,filename)) as a, open(os.path.join(basename_test,filename)) as b:
-        difflines = list(difflib.context_diff(a.readlines(),b.readlines()))
-        numDiffLines = len(difflines)
-        print(''.join(difflines))
-        assert numDiffLines == 0, filename+" differs"
+        contentsA = a.readlines()
+        contentsB = b.readlines()
+        difflines = list(difflib.ndiff(contentsA, contentsB)) ## perform diff and return human-readable format
+        difflines_machinereadable = list(difflib.context_diff(contentsA, contentsB)) ## perform diff and return machine-readable format
+        numDiffLines = len(difflines_machinereadable)
+        numDiffs = [line[0] in ['+','-'] for line in difflines].count(True) ## counts lines that begin with + or -
+        if numDiffLines != 0:
+            outfilename = os.path.join(this_repo_path,'diff-'+filename)
+            with open(outfilename, 'w') as outfile:
+                outfile.write(''.join(difflines))
+        assert numDiffLines == 0, filename+" differs with {ndiffs} differences. see diff-{name}".format( ndiffs=str(numDiffs), name=filename )
 
 def runCmdAndHideOutput(str): ## calls subprocess.run(str,stdout=subprocess.DEVNULL, shell=True)
     subprocess.run(str, stdout=subprocess.DEVNULL, shell=True)
