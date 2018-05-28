@@ -7,7 +7,7 @@ import difflib
 #this_repo_name = os.path.basename(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 this_repo_path = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 
-if platform.system() == 'Windows':
+if platform.system() == 'Windows': ## mtest can still be run on windows if you have the exes already compiled in the right places (baseline/ and testline/)
     product = 'mabe.exe'
 else:
     product = 'mabe'
