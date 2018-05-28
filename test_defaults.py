@@ -3,7 +3,10 @@ import subprocess
 from utils.helpers import this_repo_path, product, basename_base, basename_test, path_base_exe, path_test_exe
 from utils.helpers import cd, ABdiff, runCmdAndHideOutput, runCmdAndShowOutput
 
-## all tests run in order and are run if they begin with 'test_'
+##
+## all tests run IN ORDER OF DEFINITION and are run if they begin with 'test_'
+##
+
 def test_startup():
     ## generate cfg (have to 'cd' there, because mabe '-s' ignores 'GLOBAL-outputDirectory' setting)
     cd(basename_base)
