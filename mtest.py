@@ -12,7 +12,7 @@ pyreq.require("gitpython:git,pytest")
 import git
 import pytest
 
-from utils.helpers import copyfileAndPermissions, this_repo_path, mabe, basename_base, basename_test, path_base_exe, path_test_exe
+from utils.helpers import copyfileAndPermissions, this_repo_path, mabe, dirname_baseline, dirname_testline, path_baseline_exe, path_testline_exe
 from utils.helpers import cd, runCmdAndShowOutput, runCmdAndReturnOutput, runCmdAndSaveOutput, rmAllDiffFiles
 
 ## TODO: add ability to pass arguments to mbuild
@@ -31,13 +31,13 @@ def main():
     pytest.main(shlex.split("-s --color=yes -v --tb=line {subset}".format(subset=subsetTests))) ## invoke pytest (pass a filename here to run test on specific file)
 
 def compile_default_projects(args):
-    if not os.path.isfile(path_base_exe) or args.force:
+    if not os.path.isfile(path_baseline_exe) or args.force:
         print("clone new",args.branch,"at",args.commit,"as baseline", flush=True)
-        shutil.rmtree(basename_base,ignore_errors=True)
-        repo = git.Repo.clone_from("https://github.com/hintzelab/mabe", basename_base, branch=args.branch)
+        shutil.rmtree(dirname_baseline,ignore_errors=True)
+        repo = git.Repo.clone_from("https://github.com/hintzelab/mabe", dirname_baseline, branch=args.branch)
         revision = repo.create_head('revision',args.commit)
         repo.heads.revision.checkout()
-        cd(basename_base)
+        cd(dirname_baseline)
         print("building baseline", flush=True)
         subprocess.run("python pythonTools/mbuild.py -p{cores}".format(cores=str(psutil.cpu_count(logical=False))), shell=True, check=True)
         cd("..")
@@ -46,8 +46,8 @@ def compile_default_projects(args):
         print("building testline", flush=True)
         subprocess.run("python pythonTools/mbuild.py -p{cores}".format(cores=str(psutil.cpu_count(logical=False))), shell=True, check=True)
         cd(this_repo_path)
-    os.makedirs(basename_test, exist_ok=True)
-    copyfileAndPermissions(os.path.join('..',mabe), path_test_exe)
+    os.makedirs(dirname_testline, exist_ok=True)
+    copyfileAndPermissions(os.path.join('..',mabe), path_testline_exe)
 
 if __name__ == '__main__':
     main()

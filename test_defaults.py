@@ -1,6 +1,6 @@
 import os
 import subprocess
-from utils.helpers import this_repo_path, mabe, basename_base, basename_test, path_base_exe, path_test_exe
+from utils.helpers import this_repo_path, mabe, dirname_baseline, dirname_testline, path_baseline_exe, path_testline_exe
 from utils.helpers import cd, ABdiff, runCmdAndHideOutput, runCmdAndShowOutput, runCmdAndSaveOutput
 
 ##
@@ -12,17 +12,17 @@ from utils.helpers import cd, ABdiff, runCmdAndHideOutput, runCmdAndShowOutput, 
 def test_startup():
     ## generate cfg (have to 'cd' there, because mabe '-s' ignores 'GLOBAL-outputDirectory' setting)
     ## and run mabe with defaults
-    cd(basename_base)
+    cd(dirname_baseline)
     runCmdAndSaveOutput( "./{exe} -s".format(exe=mabe), filename='screen-settings' )
     runCmdAndSaveOutput( "./{exe}".format(exe=mabe), filename='screen-simulation' )
     cd('..')
 
-    cd(basename_test)
+    cd(dirname_testline)
     runCmdAndSaveOutput( "./{exe} -s".format(exe=mabe), filename='screen-settings' )
     runCmdAndSaveOutput( "./{exe}".format(exe=mabe), filename='screen-simulation')
     cd('..')
     ## FYI, could have done it the following way if we were up one dir in mabe_testing
-    #runCmdAndSaveOutput( "{exe} -p GLOBAL-outputDirectory {path}".format(exe=path_base_exe, path=basename_base), filename=basename_base+'screen-simulation' )
+    #runCmdAndSaveOutput( "{exe} -p GLOBAL-outputDirectory {path}".format(exe=path_baseline_exe, path=dirname_baseline), filename=dirname_baseline+'screen-simulation' )
 
 ## testing consistency of screen output
 def test_screen_run():

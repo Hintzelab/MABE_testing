@@ -14,11 +14,11 @@ else:
 
 ## TODO: add ability to pass arguments to mbuild
 
-basename_base = 'baseline/' ## dirname for old baseline build (used to compare new code)
-basename_test = 'testline/' ## dirname for new build to compare with old baseline
+dirname_baseline = 'baseline/' ## dirname for old baseline build (used to compare new code)
+dirname_testline = 'testline/' ## dirname for new build to compare with old baseline
 
-path_base_exe = os.path.join(basename_base,mabe)
-path_test_exe = os.path.join(basename_test,mabe)
+path_baseline_exe = os.path.join(dirname_baseline,mabe)
+path_testline_exe = os.path.join(dirname_testline,mabe)
 
 def cd(path): ## alias for os.chdir, but also platforms the path
     os.chdir( os.path.abspath(path) )
@@ -35,7 +35,7 @@ def rmAllDiffFiles(): ## removes all diff files
         os.remove(eachfile)
 
 def ABdiff(filename): ## helper fn diffing 2 files with the same name: "diff baseline/filename testline/filename"
-    with open(os.path.join(basename_base,filename)) as a, open(os.path.join(basename_test,filename)) as b:
+    with open(os.path.join(dirname_baseline,filename)) as a, open(os.path.join(dirname_testline,filename)) as b:
         contentsA = a.readlines()
         contentsB = b.readlines()
         difflines = list(difflib.ndiff(contentsA, contentsB)) ## perform diff and return human-readable format
