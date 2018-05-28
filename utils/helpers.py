@@ -20,6 +20,9 @@ basename_test = 'testline/' ## dirname for new build to compare with old baselin
 path_base_exe = os.path.join(basename_base,product)
 path_test_exe = os.path.join(basename_test,product)
 
+def cd(path): ## alias for os.chdir, but also platforms the path
+    os.chdir( os.path.abspath(path) )
+
 def copyfileAndPermissions(source,destination): ## uses shutil, stat, and os to copy preserving permissions
     shutil.copyfile(source, destination)
     st = os.stat(source)

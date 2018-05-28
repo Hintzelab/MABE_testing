@@ -1,17 +1,17 @@
 import os
 import subprocess
 from utils.helpers import this_repo_path, product, basename_base, basename_test, path_base_exe, path_test_exe
-from utils.helpers import diff, runCmdAndHideOutput, runCmdAndShowOutput
+from utils.helpers import cd, diff, runCmdAndHideOutput, runCmdAndShowOutput
 
 ## all tests run in order and are run if they begin with 'test_'
 def test_startup():
     ## generate cfg (have to 'cd' there, because mabe '-s' ignores 'GLOBAL-outputDirectory' setting)
-    os.chdir(basename_base)
+    cd(basename_base)
     runCmdAndHideOutput( "./{exe} -s".format(exe=product) )
-    os.chdir('..')
-    os.chdir(basename_test)
+    cd('..')
+    cd(basename_test)
     runCmdAndHideOutput( "./{exe} -s".format(exe=product) )
-    os.chdir('..')
+    cd('..')
     ## run mabe with defaults
     runCmdAndHideOutput( "{exe} -p GLOBAL-outputDirectory {path}".format(exe=path_base_exe, path=basename_base) )
     runCmdAndHideOutput( "{exe} -p GLOBAL-outputDirectory {path}".format(exe=path_test_exe, path=basename_test) )
