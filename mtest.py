@@ -14,6 +14,7 @@ import pytest
 
 from utils.helpers import copyfileAndPermissions, this_repo_path, mabe, dirname_baseline, dirname_testline, path_baseline_exe, path_testline_exe
 from utils.helpers import cd, runCmdAndShowOutput, runCmdAndReturnOutput, runCmdAndSaveOutput, rmAllDiffFiles
+from utils.helpers import rmfile
 
 ## TODO: add ability to pass arguments to mbuild
 
@@ -30,6 +31,20 @@ def main():
     rmAllDiffFiles()
     pytest.main(shlex.split("-s --color=yes -v --tb=line {subset}".format(subset=subsetTests))) ## invoke pytest (pass a filename here to run test on specific file)
 
+def writeDefaultBuildOptions():
+    content = """% World
+  * Test
+% Genome
+  * Circular
+% Brain
+  * CGP
+% Optimizer
+  * Simple
+% Archivist
+  * LODwAP"""
+    with open("buildOptions.txt",'w') as bo:
+        bo.write(content)
+
 def compile_default_projects(args):
     if not os.path.isfile(path_baseline_exe) or args.force:
         print("clone new",args.branch,"at",args.commit,"as baseline", flush=True)
@@ -39,11 +54,17 @@ def compile_default_projects(args):
         repo.heads.revision.checkout()
         cd(dirname_baseline)
         print("building baseline", flush=True)
+        rmfile("buildOptions.txt") ## remove buildOptions so we can regenerate it
+        writeDefaultBuildOptions()
+        subprocess.run("python pythonTools/mbuild.py -i", shell=True, check=True) ## regenerate buildOptions with ALL available modules
         subprocess.run("python pythonTools/mbuild.py -p{cores}".format(cores=str(psutil.cpu_count(logical=False))), shell=True, check=True)
         cd("..")
     if not os.path.isfile(os.path.join('..',mabe)):
         cd("..")
         print("building testline", flush=True)
+        rmfile("buildOptions.txt") ## remove buildOptions so we can regenerate it
+        writeDefaultBuildOptions()
+        subprocess.run("python pythonTools/mbuild.py -i", shell=True, check=True) ## regenerate buildOptions with ALL available modules
         subprocess.run("python pythonTools/mbuild.py -p{cores}".format(cores=str(psutil.cpu_count(logical=False))), shell=True, check=True)
         cd(this_repo_path)
     os.makedirs(dirname_testline, exist_ok=True)
