@@ -41,15 +41,17 @@ version of MABE with the older version of MABE.
 ### Usage
 ```
 $ python mtest.py -h
-usage: mtest.py [-h] [-f] [branch] [commit]
+usage: mtest.py [-h] [-f] [-s SUBSET] [branch] [commit]
 
 positional arguments:
   branch
   commit
 
 optional arguments:
-  -h, --help   show this help message and exit
-  -f, --force  force new download and compile
+  -h, --help            show this help message and exit
+  -f, --force           force new download and compile
+  -s SUBSET, --subset SUBSET
+                        test filter expression: "defaults and not settings"
 ```
 
 ### Example
