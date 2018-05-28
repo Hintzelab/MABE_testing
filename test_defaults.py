@@ -1,7 +1,7 @@
 import os
 import subprocess
 from utils.helpers import this_repo_path, product, basename_base, basename_test, path_base_exe, path_test_exe
-from utils.helpers import ABdiff, runCmdAndHideOutput, runCmdAndShowOutput
+from utils.helpers import diff, runCmdAndHideOutput, runCmdAndShowOutput
 
 ## all tests run in order and are run if they begin with 'test_'
 def test_startup():
@@ -17,19 +17,19 @@ def test_startup():
     runCmdAndHideOutput( "{exe} -p GLOBAL-outputDirectory {path}".format(exe=path_test_exe, path=basename_test) )
 
 def test_max_csv():
-    ABdiff('max.csv')
+    diff('max.csv')
 def test_pop_csv():
-    ABdiff('pop.csv')
+    diff('pop.csv')
 def test_lod_data_csv():
-    ABdiff('LOD_data.csv')
+    diff('LOD_data.csv')
 def test_lod_organisms_csv():
-    ABdiff('LOD_organisms.csv')
+    diff('LOD_organisms.csv')
 def test_settings_cfg():
-    ABdiff('settings.cfg')
+    diff('settings.cfg')
 def test_settings_organism_cfg():
-    ABdiff('settings_organism.cfg')
+    diff('settings_organism.cfg')
 def test_settings_world_cfg():
-    ABdiff('settings_world.cfg')
+    diff('settings_world.cfg')
 
 def test_shutdown():
     pass

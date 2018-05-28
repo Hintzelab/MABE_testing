@@ -31,7 +31,7 @@ def rmAllDiffFiles(): ## removes all diff files
     for eachfile in files:
         os.remove(eachfile)
 
-def ABdiff(filename): ## helper fn diffing 2 files with the same name: "diff base/filename test/filename
+def diff(filename): ## helper fn diffing 2 files with the same name: "diff base/filename test/filename
     with open(os.path.join(basename_base,filename)) as a, open(os.path.join(basename_test,filename)) as b:
         contentsA = a.readlines()
         contentsB = b.readlines()
