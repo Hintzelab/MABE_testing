@@ -23,13 +23,17 @@ def main():
     parser.add_argument('branch', nargs='?', default='master')
     parser.add_argument('commit', nargs='?', default='HEAD')
     parser.add_argument('-f','--force', action='store_true', required = False, default = False, help='force new download and compile')
+    parser.add_argument('-ls','--list', action='store_true', required = False, default = False, help='list all available tests found')
     parser.add_argument('-s','--subset', type=str, default='', help='test filter expression: "defaults and not settings"')
     args = parser.parse_args()
     cd(this_repo_path)
-    compile_default_projects(args)
-    subsetTests = '' if not len(args.subset) else '-k "'+args.subset+'"'
-    rmAllDiffFiles()
-    pytest.main(shlex.split("-s --color=yes -v --tb=line {subset}".format(subset=subsetTests))) ## invoke pytest (pass a filename here to run test on specific file)
+    if args.list:
+        pytest.main(shlex.split("-s --color=yes -v --tb=line --collect-only"))
+    else:
+        compile_default_projects(args)
+        subsetTests = '' if not len(args.subset) else '-k "'+args.subset+'"'
+        rmAllDiffFiles()
+        pytest.main(shlex.split("-s --color=yes -v --tb=line {subset}".format(subset=subsetTests))) ## invoke pytest (pass a filename here to run test on specific file)
 
 def writeDefaultBuildOptions():
     content = """% World
