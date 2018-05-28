@@ -1,6 +1,7 @@
 import os, subprocess, pytest
 from utils.helpers import this_repo_path, mabe, dirname_baseline, dirname_testline, path_baseline_exe, path_testline_exe
 from utils.helpers import cd, ABdiff, runCmdAndHideOutput, runCmdAndShowOutput, runCmdAndSaveOutput, getFileContents
+from utils.helpers import thisTestName
 
 ##
 ## all tests run IN ORDER OF DEFINITION and are run if they begin with 'test_'
@@ -69,8 +70,9 @@ def test_plf(ctx):
 def test_version_baseline(ctx):
     result = getFileContents(dirname_baseline+'screen-version')
     line1=result[0]
-    assert len(line1) != 1, "version information not found but should have been included in the build"
-def test_version_baseline(ctx):
+    assert len(line1) != 1, thisTestName()+": version information not found but should have been included in the build"
+
+def test_version_testline(ctx):
     result = getFileContents(dirname_testline+'screen-version')
     line1=result[0]
-    assert len(line1) != 1, "version information not found but should have been included in the build"
+    assert len(line1) != 1, thisTestName()+": version information not found but should have been included in the build"
