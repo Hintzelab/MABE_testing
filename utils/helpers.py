@@ -83,7 +83,7 @@ def diffForChanges(file1, file2, outfilename):
 def diffForSimilarity(file1, file2, outfilename):
     diff(file1, file2, outfilename, expectDifferent=False, ignoreStackDepth=3)
 
-def ABdiff(filename, expectDifferent=False, ignoreStackDepth=2): ## helper fn diffing 2 files with the same name: "diff baseline/filename testline/filename"
+def repoDiff(filename, expectDifferent=False, ignoreStackDepth=2): ## helper fn diffing 2 files with the same name: "diff baseline/filename testline/filename"
     with open(os.path.join(dirname_baseline,filename)) as a, open(os.path.join(dirname_testline,filename)) as b:
         contentsA = a.readlines()
         contentsB = b.readlines()
@@ -101,10 +101,10 @@ def ABdiff(filename, expectDifferent=False, ignoreStackDepth=2): ## helper fn di
             assert numDiffLines == 0, thisTestName(ignoreStackDepth=ignoreStackDepth)+": {ndiffs} changes (see diff-{name})".format( ndiffs=str(numDiffs), name=filename )
 
 def repoDiffForChanges(filename):
-    ABdiff(filename, expectDifferent=True, ignoreStackDepth=3)
+    repoDiff(filename, expectDifferent=True, ignoreStackDepth=3)
 
 def repoDiffForSimilarity(filename):
-    ABdiff(filename, expectDifferent=False, ignoreStackDepth=3)
+    repoDiff(filename, expectDifferent=False, ignoreStackDepth=3)
 
 def runCmdAndHideOutput(str): ## calls subprocess.run(str,stdout=subprocess.DEVNULL, shell=True)
     subprocess.run(str, stdout=subprocess.DEVNULL, shell=True)

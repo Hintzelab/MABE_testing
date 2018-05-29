@@ -1,6 +1,6 @@
 import os, subprocess, pytest
 from utils.helpers import this_repo_path, mabe, dirname_baseline, dirname_testline, path_baseline_exe, path_testline_exe
-from utils.helpers import cd, diff, ABdiff, runCmdAndHideOutput, runCmdAndShowOutput, runCmdAndSaveOutput, getFileContents
+from utils.helpers import cd, diff, repoDiff, runCmdAndHideOutput, runCmdAndShowOutput, runCmdAndSaveOutput, getFileContents
 from utils.helpers import copyfileAndPermissions, movefile, movefileSwap
 
 ##
@@ -43,17 +43,17 @@ ctx.ran = False
 
 ## testing consistency of screen output
 def test_screen_settings(ctx):
-    ABdiff('screen-settings')
+    repoDiff('screen-settings')
 def test_screen_settings_reload(ctx):
-    ABdiff('screen-settings-reload')
+    repoDiff('screen-settings-reload')
 
 ## cfg from -s
 def test_settings_cfg(ctx):
-    ABdiff('settings.cfg')
+    repoDiff('settings.cfg')
 def test_settings_organism_cfg(ctx):
-    ABdiff('settings_organism.cfg')
+    repoDiff('settings_organism.cfg')
 def test_settings_world_cfg(ctx):
-    ABdiff('settings_world.cfg')
+    repoDiff('settings_world.cfg')
 
 ## cfg from -f *fg -s
 def test_settings_reload_cfg(ctx):

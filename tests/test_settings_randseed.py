@@ -1,6 +1,6 @@
 import os, subprocess, pytest
 from utils.helpers import this_repo_path, mabe, dirname_baseline, dirname_testline, path_baseline_exe, path_testline_exe
-from utils.helpers import cd, diff, ABdiff, runCmdAndHideOutput, runCmdAndShowOutput, runCmdAndSaveOutput, getFileContents
+from utils.helpers import cd, diff, repoDiff, runCmdAndHideOutput, runCmdAndShowOutput, runCmdAndSaveOutput, getFileContents
 from utils.helpers import thisTestName
 
 ##
@@ -47,7 +47,7 @@ def test_screen_randseed_random(ctx,testDir):
 
 ## Test randomSeed -1 between baseline and testline
 def test_screen_randseed_random_inconsistency(ctx):
-    ABdiff('screen-settings-randseed-random-A', expectDifferent=True)
+    repoDiff('screen-settings-randseed-random-A', expectDifferent=True)
 
 ## Test randomSeed -1 produces expected different output from 2 consecutive runs
 @pytest.mark.parametrize('testDir',[dirname_baseline, dirname_testline], ids=['baseline','testline'])
@@ -58,4 +58,4 @@ def test_screen_randseed_nonrandom(ctx,testDir):
 
 ## Test randomSeed -1 between baseline and testline
 def test_screen_randseed_nonrandom_consistency(ctx):
-    ABdiff('screen-settings-randseed-nonrandom-A')
+    repoDiff('screen-settings-randseed-nonrandom-A')

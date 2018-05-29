@@ -1,6 +1,6 @@
 import os, subprocess, pytest
 from utils.helpers import this_repo_path, mabe, dirname_baseline, dirname_testline, path_baseline_exe, path_testline_exe
-from utils.helpers import cd, diff, ABdiff, runCmdAndHideOutput, runCmdAndShowOutput, runCmdAndSaveOutput, getFileContents
+from utils.helpers import cd, diff, repoDiff, runCmdAndHideOutput, runCmdAndShowOutput, runCmdAndSaveOutput, getFileContents
 from utils.helpers import copyfileAndPermissions, buildMessageErrorExpectedWithArgs
 
 ##
@@ -35,17 +35,17 @@ ctx.ran = False
 
 ## testing consistency of screen output
 def test_screen_poploader(ctx):
-    ABdiff('screen-plf')
+    repoDiff('screen-plf')
 
 ## generated files
 def test_plf(ctx):
-    ABdiff('population_loader.plf')
+    repoDiff('population_loader.plf')
 def test_lod_data(ctx):
-    ABdiff('LOD_data.csv')
+    repoDiff('LOD_data.csv')
 def test_lod_organisms(ctx):
-    ABdiff('LOD_organisms.csv')
+    repoDiff('LOD_organisms.csv')
 def test_saving(ctx):
-    ABdiff('snapshot_organisms_0.csv')
+    repoDiff('snapshot_organisms_0.csv')
 def test_screen_loading(ctx):
     for eachdir in [dirname_baseline, dirname_testline]: ## loop through each of baseline and testline and generate the files for later diffing
         cd(eachdir)
@@ -56,9 +56,9 @@ def test_screen_loading(ctx):
                  )
         runCmdAndSaveOutput(runStr, filename='screen-poploading') ## generate snapshot_organisms_0.csv
         cd('..') ## could also have done cd(this_repo_path)
-    ABdiff('screen-poploading')
+    repoDiff('screen-poploading')
 def test_saving_after_loading(ctx):
-    ABdiff('snapshot_organisms_0.csv')
+    repoDiff('snapshot_organisms_0.csv')
 
 ##
 ## Test success conditions for greatest/least
@@ -83,7 +83,7 @@ def test_reload_most_byid_noerror(ctx,numToLoad,mostCommand):
                  )
         runCmdAndSaveOutput(runStr, filename=outputFilename) ## normalize ID
         cd('..')
-    ABdiff(outputFilename)
+    repoDiff(outputFilename)
 
 ##
 ## Test failure conditions for greatest/least

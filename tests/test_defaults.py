@@ -1,6 +1,6 @@
 import os, subprocess, pytest
 from utils.helpers import this_repo_path, mabe, dirname_baseline, dirname_testline, path_baseline_exe, path_testline_exe
-from utils.helpers import cd, ABdiff, runCmdAndHideOutput, runCmdAndShowOutput, runCmdAndSaveOutput, getFileContents
+from utils.helpers import cd, repoDiff, runCmdAndHideOutput, runCmdAndShowOutput, runCmdAndSaveOutput, getFileContents
 from utils.helpers import thisTestName
 
 ##
@@ -36,35 +36,35 @@ ctx.ran = False
 
 ## testing consistency of screen output
 def test_screen_help(ctx):
-    ABdiff('screen-help')
+    repoDiff('screen-help')
 def test_screen_run(ctx):
-    ABdiff('screen-settings')
+    repoDiff('screen-settings')
 def test_screen_simulation(ctx):
-    ABdiff('screen-simulation')
+    repoDiff('screen-simulation')
 def test_screen_plf_generation(ctx):
-    ABdiff('screen-poploader')
+    repoDiff('screen-poploader')
 
 ## cfg
 def test_settings_cfg(ctx):
-    ABdiff('settings.cfg')
+    repoDiff('settings.cfg')
 def test_settings_organism_cfg(ctx):
-    ABdiff('settings_organism.cfg')
+    repoDiff('settings_organism.cfg')
 def test_settings_world_cfg(ctx):
-    ABdiff('settings_world.cfg')
+    repoDiff('settings_world.cfg')
 
 ## csv
 def test_max_csv(ctx):
-    ABdiff('max.csv')
+    repoDiff('max.csv')
 def test_pop_csv(ctx):
-    ABdiff('pop.csv')
+    repoDiff('pop.csv')
 def test_lod_data_csv(ctx):
-    ABdiff('LOD_data.csv')
+    repoDiff('LOD_data.csv')
 def test_lod_organisms_csv(ctx):
-    ABdiff('LOD_organisms.csv')
+    repoDiff('LOD_organisms.csv')
 
 ## poploader
 def test_plf(ctx):
-    ABdiff('population_loader.plf')
+    repoDiff('population_loader.plf')
 
 ## version output
 def test_version_baseline(ctx):
