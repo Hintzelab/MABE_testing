@@ -108,40 +108,14 @@ def repoDiffForSimilarity(filename):
     repoDiff(filename, expectDifferent=False, ignoreStackDepth=3)
 
 def runCmdAndHideOutput(str): ## calls subprocess.run(str,stdout=subprocess.DEVNULL, shell=True)
-    error=False
-    try:
-        subprocess.run(str, stdout=subprocess.DEVNULL, shell=True)
-    except:
-        error=True
-    if error:
-        pytest.fail("mabe crashed '{args}'".format(args=str))
+    subprocess.run(str, stdout=subprocess.DEVNULL, shell=True)
 def runCmdAndReturnOutput(str): ## calls subprocess.run(str, shell=True, check=True) and returns result
-    error=False
-    resultObj = None
-    try:
-        resultObj = subprocess.run(str, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    except:
-        error=True
-    if error:
-        pytest.fail("mabe crashed '{args}'".format(args=str))
+    resultObj = subprocess.run(str, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     return resultObj.stdout.decode()+'\n'+resultObj.stderr.decode()
 def runCmdAndShowOutput(str): ## calls subprocess.run(str, shell=True, check=True)
-    error=False
-    try:
-        print( runCmdAndReturnOutput(str), flush=True)
-    except:
-        error=True
-    if error:
-        pytest.fail("mabe crashed '{args}'".format(args=str))
+    print( runCmdAndReturnOutput(str), flush=True)
 def runCmdAndSaveOutput(str, filename): ## calls subprocess.run(str, shell=True, check=True) and saves result to filename
-    error=False
-    output = None
-    try:
-        output = runCmdAndReturnOutput(str)
-    except:
-        error=True
-    if error:
-        pytest.fail("mabe crashed '{args}'".format(args=str))
+    output = runCmdAndReturnOutput(str)
     platformedPath = os.path.abspath(filename) ## converts possible "adir/afile.txt" to "C:\the\whole\path\adir\afile.txt" if needed
     with open(platformedPath, 'w') as outfile:
         outfile.write(output)
