@@ -32,7 +32,7 @@ def main():
     else:
         compile_default_projects(args)
         subsetTests = '' if not len(args.subset) else '-k "'+args.subset+'"'
-        rmAllDiffFiles()
+        rmAllDiffFiles() ## not actually needed...
         pytest.main(shlex.split("--color=yes --tb=line -v {subset}".format(subset=subsetTests)))
 
 def writeDefaultBuildOptions():
