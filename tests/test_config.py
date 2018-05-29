@@ -2,6 +2,7 @@ import os, subprocess, pytest
 from utils.helpers import this_repo_path, mabe, dirname_baseline, dirname_testline, path_baseline_exe, path_testline_exe
 from utils.helpers import cd, diff, repoDiff, runCmdAndHideOutput, runCmdAndShowOutput, runCmdAndSaveOutput, getFileContents
 from utils.helpers import copyfileAndPermissions, movefile, movefileSwap
+from utils.helpers import thisTestName, repoDiffForDifference, repoDiffForSimilarity, diffForDifference, diffForSimilarity
 
 ##
 ## all tests run IN ORDER OF DEFINITION and are run if they begin with 'test_'
@@ -43,37 +44,37 @@ ctx.ran = False
 
 ## testing consistency of screen output
 def test_screen_settings(ctx):
-    repoDiff('screen-settings')
+    repoDiffForSimilarity('screen-settings')
 def test_screen_settings_reload(ctx):
-    repoDiff('screen-settings-reload')
+    repoDiffForSimilarity('screen-settings-reload')
 
 ## cfg from -s
 def test_settings_cfg(ctx):
-    repoDiff('settings.cfg')
+    repoDiffForSimilarity('settings.cfg')
 def test_settings_organism_cfg(ctx):
-    repoDiff('settings_organism.cfg')
+    repoDiffForSimilarity('settings_organism.cfg')
 def test_settings_world_cfg(ctx):
-    repoDiff('settings_world.cfg')
+    repoDiffForSimilarity('settings_world.cfg')
 
 ## cfg from -f *fg -s
 def test_settings_reload_cfg(ctx):
-    diff(dirname_baseline+'settings.cfg.bak',
+    diffForSimilarity(dirname_baseline+'settings.cfg.bak',
          dirname_baseline+'settings.cfg',
-         outfilename='diff-baseline-settings.cfg')
-    diff(dirname_testline+'settings.cfg.bak',
+         outfilename='diffForSimilarity-baseline-settings.cfg')
+    diffForSimilarity(dirname_testline+'settings.cfg.bak',
          dirname_testline+'settings.cfg',
-         outfilename='diff-testline-settings.cfg')
+         outfilename='diffForSimilarity-testline-settings.cfg')
 def test_settings_reload_organism_cfg(ctx):
-    diff(dirname_baseline+'settings_organism.cfg.bak',
+    diffForSimilarity(dirname_baseline+'settings_organism.cfg.bak',
          dirname_baseline+'settings_organism.cfg',
-         outfilename='diff-baseline-settings_organism.cfg')
-    diff(dirname_testline+'settings_organism.cfg.bak',
+         outfilename='diffForSimilarity-baseline-settings_organism.cfg')
+    diffForSimilarity(dirname_testline+'settings_organism.cfg.bak',
          dirname_testline+'settings_organism.cfg',
-         outfilename='diff-testline-settings_organism.cfg')
+         outfilename='diffForSimilarity-testline-settings_organism.cfg')
 def test_settings_reload_world_cfg(ctx):
-    diff(dirname_baseline+'settings_world.cfg.bak',
+    diffForSimilarity(dirname_baseline+'settings_world.cfg.bak',
          dirname_baseline+'settings_world.cfg',
-         outfilename='diff-baseline-settings_world.cfg')
-    diff(dirname_testline+'settings_world.cfg.bak',
+         outfilename='diffForSimilarity-baseline-settings_world.cfg')
+    diffForSimilarity(dirname_testline+'settings_world.cfg.bak',
          dirname_testline+'settings_world.cfg',
-         outfilename='diff-testline-settings_world.cfg')
+         outfilename='diffForSimilarity-testline-settings_world.cfg')

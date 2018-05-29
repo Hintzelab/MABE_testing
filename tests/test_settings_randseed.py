@@ -1,7 +1,7 @@
 import os, subprocess, pytest
 from utils.helpers import this_repo_path, mabe, dirname_baseline, dirname_testline, path_baseline_exe, path_testline_exe
 from utils.helpers import cd, diff, repoDiff, runCmdAndHideOutput, runCmdAndShowOutput, runCmdAndSaveOutput, getFileContents
-from utils.helpers import thisTestName
+from utils.helpers import thisTestName, repoDiffForDifference, repoDiffForSimilarity, diffForDifference, diffForSimilarity
 
 ##
 ## all tests run IN ORDER OF DEFINITION and are run if they begin with 'test_'
@@ -40,22 +40,21 @@ ctx.ran = False
 ## Test randomSeed -1 produces expected different output from 2 consecutive runs
 @pytest.mark.parametrize('testDir',[dirname_baseline, dirname_testline], ids=['baseline','testline'])
 def test_screen_randseed_random(ctx,testDir):
-    diff(testDir+'screen-settings-randseed-random-A',
-         testDir+'screen-settings-randseed-random-B',
-         outfilename="diff-"+testDir+"-screen-settings-randseed-random-A",
-         expectDifferent=True)
+    diffForDifference(testDir+'screen-settings-randseed-random-A',
+                      testDir+'screen-settings-randseed-random-B',
+                      outfilename="diff-"+testDir+"-screen-settings-randseed-random-A")
 
 ## Test randomSeed -1 between baseline and testline
 def test_screen_randseed_random_inconsistency(ctx):
-    repoDiff('screen-settings-randseed-random-A', expectDifferent=True)
+    repoDiffForDifference('screen-settings-randseed-random-A')
 
 ## Test randomSeed -1 produces expected different output from 2 consecutive runs
 @pytest.mark.parametrize('testDir',[dirname_baseline, dirname_testline], ids=['baseline','testline'])
 def test_screen_randseed_nonrandom(ctx,testDir):
-    diff(testDir+'screen-settings-randseed-nonrandom-A',
-         testDir+'screen-settings-randseed-nonrandom-B',
-         outfilename="diff-"+testDir+"-screen-settings-randseed-nonrandom-A")
+    diffForSimilarity(testDir+'screen-settings-randseed-nonrandom-A',
+                      testDir+'screen-settings-randseed-nonrandom-B',
+                      outfilename="diff-"+testDir+"-screen-settings-randseed-nonrandom-A")
 
 ## Test randomSeed -1 between baseline and testline
 def test_screen_randseed_nonrandom_consistency(ctx):
-    repoDiff('screen-settings-randseed-nonrandom-A')
+    repoDiffForSimilarity('screen-settings-randseed-nonrandom-A')

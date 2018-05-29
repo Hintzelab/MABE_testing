@@ -1,7 +1,7 @@
 import os, subprocess, pytest
 from utils.helpers import this_repo_path, mabe, dirname_baseline, dirname_testline, path_baseline_exe, path_testline_exe
-from utils.helpers import cd, repoDiff, runCmdAndHideOutput, runCmdAndShowOutput, runCmdAndSaveOutput, getFileContents
-from utils.helpers import thisTestName
+from utils.helpers import cd, diff, repoDiff, runCmdAndHideOutput, runCmdAndShowOutput, runCmdAndSaveOutput, getFileContents
+from utils.helpers import thisTestName, repoDiffForDifference, repoDiffForSimilarity, diffForDifference, diffForSimilarity
 
 ##
 ## all tests run IN ORDER OF DEFINITION and are run if they begin with 'test_'
@@ -16,6 +16,7 @@ def ctx(): ## create a context for all the tests - you could potentially use thi
         ## and run mabe with defaults
         dirs = [dirname_baseline, dirname_testline]
         for eachdir in dirs: ## loop through each of baseline and testline and generate the files for later diffing
+            cd(this_repo_path)
             cd(eachdir)
             runCmdAndSaveOutput( "./{exe} -s".format(exe=mabe), filename='screen-settings' )
             runCmdAndSaveOutput( "./{exe} -h".format(exe=mabe), filename='screen-help' )
@@ -36,35 +37,35 @@ ctx.ran = False
 
 ## testing consistency of screen output
 def test_screen_help(ctx):
-    repoDiff('screen-help')
+    repoDiffForSimilarity('screen-help')
 def test_screen_run(ctx):
-    repoDiff('screen-settings')
+    repoDiffForSimilarity('screen-settings')
 def test_screen_simulation(ctx):
-    repoDiff('screen-simulation')
+    repoDiffForSimilarity('screen-simulation')
 def test_screen_plf_generation(ctx):
-    repoDiff('screen-poploader')
+    repoDiffForSimilarity('screen-poploader')
 
 ## cfg
 def test_settings_cfg(ctx):
-    repoDiff('settings.cfg')
+    repoDiffForSimilarity('settings.cfg')
 def test_settings_organism_cfg(ctx):
-    repoDiff('settings_organism.cfg')
+    repoDiffForSimilarity('settings_organism.cfg')
 def test_settings_world_cfg(ctx):
-    repoDiff('settings_world.cfg')
+    repoDiffForSimilarity('settings_world.cfg')
 
 ## csv
 def test_max_csv(ctx):
-    repoDiff('max.csv')
+    repoDiffForSimilarity('max.csv')
 def test_pop_csv(ctx):
-    repoDiff('pop.csv')
+    repoDiffForSimilarity('pop.csv')
 def test_lod_data_csv(ctx):
-    repoDiff('LOD_data.csv')
+    repoDiffForSimilarity('LOD_data.csv')
 def test_lod_organisms_csv(ctx):
-    repoDiff('LOD_organisms.csv')
+    repoDiffForSimilarity('LOD_organisms.csv')
 
 ## poploader
 def test_plf(ctx):
-    repoDiff('population_loader.plf')
+    repoDiffForSimilarity('population_loader.plf')
 
 ## version output
 def test_version_baseline(ctx):

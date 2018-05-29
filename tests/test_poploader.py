@@ -2,6 +2,7 @@ import os, subprocess, pytest
 from utils.helpers import this_repo_path, mabe, dirname_baseline, dirname_testline, path_baseline_exe, path_testline_exe
 from utils.helpers import cd, diff, repoDiff, runCmdAndHideOutput, runCmdAndShowOutput, runCmdAndSaveOutput, getFileContents
 from utils.helpers import copyfileAndPermissions, buildMessageErrorExpectedWithArgs
+from utils.helpers import thisTestName, repoDiffForDifference, repoDiffForSimilarity, diffForDifference, diffForSimilarity
 
 ##
 ## all tests run IN ORDER OF DEFINITION and are run if they begin with 'test_'
@@ -19,6 +20,7 @@ def ctx(): ## create a context for all the tests - you could potentially use thi
         ## and run mabe with defaults
         dirs = [dirname_baseline, dirname_testline]
         for eachdir in dirs: ## loop through each of baseline and testline and generate the files for later diffing
+            cd(this_repo_path)
             cd(eachdir)
             runCmdAndSaveOutput( "./{exe} -l".format(exe=mabe), filename='screen-plf' )
             runCmdAndHideOutput( brainTestStringWithSaving.format( brainT='CGP', initPop='default 100', updates='10' ) ) ## generate large snapshot_organisms_10.csv
@@ -35,17 +37,17 @@ ctx.ran = False
 
 ## testing consistency of screen output
 def test_screen_poploader(ctx):
-    repoDiff('screen-plf')
+    repoDiffForSimilarity('screen-plf')
 
 ## generated files
 def test_plf(ctx):
-    repoDiff('population_loader.plf')
+    repoDiffForSimilarity('population_loader.plf')
 def test_lod_data(ctx):
-    repoDiff('LOD_data.csv')
+    repoDiffForSimilarity('LOD_data.csv')
 def test_lod_organisms(ctx):
-    repoDiff('LOD_organisms.csv')
+    repoDiffForSimilarity('LOD_organisms.csv')
 def test_saving(ctx):
-    repoDiff('snapshot_organisms_0.csv')
+    repoDiffForSimilarity('snapshot_organisms_0.csv')
 def test_screen_loading(ctx):
     for eachdir in [dirname_baseline, dirname_testline]: ## loop through each of baseline and testline and generate the files for later diffing
         cd(eachdir)
@@ -56,9 +58,9 @@ def test_screen_loading(ctx):
                  )
         runCmdAndSaveOutput(runStr, filename='screen-poploading') ## generate snapshot_organisms_0.csv
         cd('..') ## could also have done cd(this_repo_path)
-    repoDiff('screen-poploading')
+    repoDiffForSimilarity('screen-poploading')
 def test_saving_after_loading(ctx):
-    repoDiff('snapshot_organisms_0.csv')
+    repoDiffForSimilarity('snapshot_organisms_0.csv')
 
 ##
 ## Test success conditions for greatest/least
@@ -83,7 +85,7 @@ def test_reload_most_byid_noerror(ctx,numToLoad,mostCommand):
                  )
         runCmdAndSaveOutput(runStr, filename=outputFilename) ## normalize ID
         cd('..')
-    repoDiff(outputFilename)
+    repoDiffForSimilarity(outputFilename)
 
 ##
 ## Test failure conditions for greatest/least
@@ -134,11 +136,11 @@ def test_reload_brains(ctx, brainType):
         for filetype in ['data','organisms']:
             copyfileAndPermissions('snapshot_'+filetype+'_0.csv', 'save2_'+filetype+'.csv') ## save second output
         cd('..')
-    diff(dirname_baseline+'save1_organisms.csv',
+    diffForSimilarity(dirname_baseline+'save1_organisms.csv',
          dirname_baseline+'save2_organisms.csv',
          outfilename='diff-baseline-reloaded-{}-organisms'.format(brainType)
          )
-    diff(dirname_testline+'save1_data.csv',
+    diffForSimilarity(dirname_testline+'save1_data.csv',
          dirname_testline+'save2_data.csv',
          outfilename='diff-testline-reloaded-{}-data'.format(brainType)
          )
