@@ -2,8 +2,9 @@ import platform, subprocess, os, glob, inspect
 import shutil, stat ## for file copy w/ permissions
 import re ## for re.sub
 from utils import pyreq
-pyreq.require('difflib')
+pyreq.require('difflib,gitpython:git,pytest')
 import difflib
+import pytest
 
 #this_repo_name = os.path.basename(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 this_repo_path = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
@@ -77,7 +78,7 @@ def diff(file1, file2, outfilename, expectDifferent=False, ignoreStackDepth=2): 
         else:
             assert numDiffLines == 0, thisTestName(ignoreStackDepth=ignoreStackDepth)+": {ndiffs} changes (see diff-{name})".format(a=file1, b=file2, ndiffs=str(numDiffs), name=outfilename )
 
-def diffForChanges(file1, file2, outfilename):
+def diffForDifference(file1, file2, outfilename):
     diff(file1, file2, outfilename, expectDifferent=True, ignoreStackDepth=3)
 
 def diffForSimilarity(file1, file2, outfilename):
@@ -100,21 +101,47 @@ def repoDiff(filename, expectDifferent=False, ignoreStackDepth=2): ## helper fn 
         else:
             assert numDiffLines == 0, thisTestName(ignoreStackDepth=ignoreStackDepth)+": {ndiffs} changes (see diff-{name})".format( ndiffs=str(numDiffs), name=filename )
 
-def repoDiffForChanges(filename):
+def repoDiffForDifference(filename):
     repoDiff(filename, expectDifferent=True, ignoreStackDepth=3)
 
 def repoDiffForSimilarity(filename):
     repoDiff(filename, expectDifferent=False, ignoreStackDepth=3)
 
 def runCmdAndHideOutput(str): ## calls subprocess.run(str,stdout=subprocess.DEVNULL, shell=True)
-    subprocess.run(str, stdout=subprocess.DEVNULL, shell=True)
+    error=False
+    try:
+        subprocess.run(str, stdout=subprocess.DEVNULL, shell=True)
+    except:
+        error=True
+    if error:
+        pytest.fail("mabe crashed '{args}'".format(args=str))
 def runCmdAndReturnOutput(str): ## calls subprocess.run(str, shell=True, check=True) and returns result
-    resultObj = subprocess.run(str, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    error=False
+    resultObj = None
+    try:
+        resultObj = subprocess.run(str, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    except:
+        error=True
+    if error:
+        pytest.fail("mabe crashed '{args}'".format(args=str))
     return resultObj.stdout.decode()+'\n'+resultObj.stderr.decode()
 def runCmdAndShowOutput(str): ## calls subprocess.run(str, shell=True, check=True)
-    print( runCmdAndReturnOutput(str), flush=True)
+    error=False
+    try:
+        print( runCmdAndReturnOutput(str), flush=True)
+    except:
+        error=True
+    if error:
+        pytest.fail("mabe crashed '{args}'".format(args=str))
 def runCmdAndSaveOutput(str, filename): ## calls subprocess.run(str, shell=True, check=True) and saves result to filename
-    output = runCmdAndReturnOutput(str)
+    error=False
+    output = None
+    try:
+        output = runCmdAndReturnOutput(str)
+    except:
+        error=True
+    if error:
+        pytest.fail("mabe crashed '{args}'".format(args=str))
     platformedPath = os.path.abspath(filename) ## converts possible "adir/afile.txt" to "C:\the\whole\path\adir\afile.txt" if needed
     with open(platformedPath, 'w') as outfile:
         outfile.write(output)
