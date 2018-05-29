@@ -1,5 +1,6 @@
 import platform, subprocess, os, glob, inspect
-import shutil, stat # for file copy w/ permissions
+import shutil, stat ## for file copy w/ permissions
+import re ## for re.sub
 from utils import pyreq
 pyreq.require('difflib')
 import difflib
@@ -59,8 +60,9 @@ def getFileContents(filename): ## helper fn to load a file and return contents a
         contents=infile.readlines()
     return contents
 
-def diff(file1, file2, outfilename): ## helper fn diffing 2 arbitrary files
-    with open(os.path.abspath(file1)) as a, open(os.path.abspath(file1)) as b:
+def diff(file1, file2, outfilename, expectDifferent=False): ## helper fn diffing 2 arbitrary files
+    outfilename = re.sub('[/]','',outfilename) ## remove possible trailing 
+    with open(os.path.abspath(file1)) as a, open(os.path.abspath(file2)) as b:
         contentsA = a.readlines()
         contentsB = b.readlines()
         difflines = list(difflib.ndiff(contentsA, contentsB)) ## perform diff and return human-readable format
@@ -70,9 +72,12 @@ def diff(file1, file2, outfilename): ## helper fn diffing 2 arbitrary files
         if numDiffLines != 0:
             with open(os.path.abspath(outfilename), 'w') as outfile:
                 outfile.write(''.join(difflines))
-        assert numDiffLines == 0, thisTestName(ignoreStackDepth=2)+": {ndiffs} changes (see diff-{name})".format(a=file1, b=file2, ndiffs=str(numDiffs), name=outfilename )
+        if expectDifferent:
+            assert numDiffLines != 0, thisTestName(ignoreStackDepth=2)+": {name1} and {name2} should be different)".format(name1=file1, name2=file2)
+        else:
+            assert numDiffLines == 0, thisTestName(ignoreStackDepth=2)+": {ndiffs} changes (see diff-{name})".format(a=file1, b=file2, ndiffs=str(numDiffs), name=outfilename )
 
-def ABdiff(filename): ## helper fn diffing 2 files with the same name: "diff baseline/filename testline/filename"
+def ABdiff(filename, expectDifferent=False): ## helper fn diffing 2 files with the same name: "diff baseline/filename testline/filename"
     with open(os.path.join(dirname_baseline,filename)) as a, open(os.path.join(dirname_testline,filename)) as b:
         contentsA = a.readlines()
         contentsB = b.readlines()
@@ -84,7 +89,10 @@ def ABdiff(filename): ## helper fn diffing 2 files with the same name: "diff bas
             outfilename = os.path.join(this_repo_path,'diff-'+filename)
             with open(outfilename, 'w') as outfile:
                 outfile.write(''.join(difflines))
-        assert numDiffLines == 0, thisTestName(ignoreStackDepth=2)+": {ndiffs} changes (see diff-{name})".format( ndiffs=str(numDiffs), name=filename )
+        if expectDifferent:
+            assert numDiffLines != 0, thisTestName(ignoreStackDepth=2)+": Expected differences in {name} between baseline & testline.".format( name=filename )
+        else:
+            assert numDiffLines == 0, thisTestName(ignoreStackDepth=2)+": {ndiffs} changes (see diff-{name})".format( ndiffs=str(numDiffs), name=filename )
 
 def runCmdAndHideOutput(str): ## calls subprocess.run(str,stdout=subprocess.DEVNULL, shell=True)
     subprocess.run(str, stdout=subprocess.DEVNULL, shell=True)
