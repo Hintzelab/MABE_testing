@@ -77,3 +77,8 @@ def test_version_testline(ctx):
     result = getFileContents(dirname_testline+'screen-version')
     line1=result[0]
     assert len(line1) != 1, thisTestName()+": version information not found but should have been included in the build"
+
+def test_version_length(ctx):
+    baselineStr = ''.join(getFileContents(dirname_baseline+'screen-version'))
+    testlineStr = ''.join(getFileContents(dirname_testline+'screen-version'))
+    assert len(baselineStr) == len(testlineStr), thisTestName()+": version line length or commit hash length differs"
