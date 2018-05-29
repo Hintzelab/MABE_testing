@@ -77,10 +77,10 @@ def diff(file1, file2, outfilename, expectDifferent=False, ignoreStackDepth=2): 
         else:
             assert numDiffLines == 0, thisTestName(ignoreStackDepth=ignoreStackDepth)+": {ndiffs} changes (see diff-{name})".format(a=file1, b=file2, ndiffs=str(numDiffs), name=outfilename )
 
-diffForChanges(file1, file2, outfilename):
+def diffForChanges(file1, file2, outfilename):
     diff(file1, file2, outfilename, expectDifferent=True, ignoreStackDepth=3)
 
-diffForSimilarity(file1, file2, outfilename):
+def diffForSimilarity(file1, file2, outfilename):
     diff(file1, file2, outfilename, expectDifferent=False, ignoreStackDepth=3)
 
 def ABdiff(filename, expectDifferent=False, ignoreStackDepth=2): ## helper fn diffing 2 files with the same name: "diff baseline/filename testline/filename"
