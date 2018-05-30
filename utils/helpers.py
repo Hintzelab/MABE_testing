@@ -1,18 +1,26 @@
 import platform, subprocess, os, glob, inspect
 import shutil, stat ## for file copy w/ permissions
 import re ## for re.sub
+import platform ## system identification
 from utils import pyreq
 pyreq.require('difflib,gitpython:git,pytest')
 import difflib
 import pytest
+
+if platform.system() == 'Windows':
+    import win32api
+    import win32security
+    import ntsecuritycon as con
 
 #this_repo_name = os.path.basename(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 this_repo_path = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 
 if platform.system() == 'Windows': ## mtest can still be run on windows if you have the exes already compiled in the right places (baseline/ and testline/)
     mabe = 'mabe.exe'
+    dotSlashMabe = mabe
 else:
     mabe = 'mabe'
+    dotSlashMabe = './mabe'
 
 ## TODO: add ability to pass arguments to mbuild
 
@@ -33,9 +41,21 @@ def cd(path): ## alias for os.chdir, but also platforms the path
 
 def copyfileAndPermissions(source,destination): ## uses shutil, stat, and os to copy preserving permissions
     shutil.copyfile(source, destination)
-    st = os.stat(source)
-    os.chown(destination, st[stat.ST_UID], st[stat.ST_GID])
-    os.chmod(destination, st[stat.ST_MODE])
+    if platform.system() == 'Windows':
+        everyone, domain, type = win32security.LookupAccountName ("", "Everyone")
+        admins, domain, type = win32security.LookupAccountName ("", "Administrators")
+        user, domain, type = win32security.LookupAccountName ("", win32api.GetUserName ())
+        sd = win32security.GetFileSecurity (destination, win32security.DACL_SECURITY_INFORMATION)
+        dacl = win32security.ACL ()
+        dacl.AddAccessAllowedAce (win32security.ACL_REVISION, con.FILE_GENERIC_READ | con.GENERIC_EXECUTE, everyone)
+        dacl.AddAccessAllowedAce (win32security.ACL_REVISION, con.FILE_GENERIC_READ | con.FILE_GENERIC_WRITE | con.GENERIC_EXECUTE, user)
+        dacl.AddAccessAllowedAce (win32security.ACL_REVISION, con.FILE_ALL_ACCESS, admins)
+        sd.SetSecurityDescriptorDacl (1, dacl, 0)
+        win32security.SetFileSecurity (destination, win32security.DACL_SECURITY_INFORMATION, sd)
+    else:
+        st = os.stat(source)
+        os.chown(destination, st[stat.ST_UID], st[stat.ST_GID])
+        os.chown(destination, st[stat.ST_MODE])
 
 def movefile(source,destination): ## alias for shutil.move
     shutil.move(source,destination)
@@ -107,15 +127,24 @@ def repoDiffForDifference(filename):
 def repoDiffForSimilarity(filename):
     repoDiff(filename, expectDifferent=False, ignoreStackDepth=3)
 
-def runCmdAndHideOutput(str): ## calls subprocess.run(str,stdout=subprocess.DEVNULL, shell=True)
-    subprocess.run(str, stdout=subprocess.DEVNULL, shell=True)
-def runCmdAndReturnOutput(str): ## calls subprocess.run(str, shell=True, check=True) and returns result
-    resultObj = subprocess.run(str, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    return resultObj.stdout.decode()+'\n'+resultObj.stderr.decode()
-def runCmdAndShowOutput(str): ## calls subprocess.run(str, shell=True, check=True)
-    print( runCmdAndReturnOutput(str), flush=True)
-def runCmdAndSaveOutput(str, filename): ## calls subprocess.run(str, shell=True, check=True) and saves result to filename
-    output = runCmdAndReturnOutput(str)
+def runCmdAndHideOutput(string):
+    proc = subprocess.Popen(string, shell=True, stdout=subprocess.PIPE, bufsize=1)
+    out,err = proc.communicate()
+    if proc.returncode != 0:
+        raise subprocess.CalledProcessError(proc.returncode,string)#thisTestName(ignoreStackDepth))#+" crash: '{args}'".format(args=string))
+def runCmdAndReturnOutput(string):
+    proc = subprocess.Popen(string, shell=True, stdout=subprocess.PIPE, bufsize=1)
+    out,err = proc.communicate()
+    if proc.returncode != 0:
+        raise subprocess.CalledProcessError(proc.returncode,string)
+    if err is None:
+        return out.decode()
+    else:
+        return out.decode()+err.decode()
+def runCmdAndShowOutput(string):
+    print( runCmdAndReturnOutput(string), flush=True)
+def runCmdAndSaveOutput(string, filename): ## calls subprocess.run(str, shell=True, check=True) and saves result to filename
+    output = runCmdAndReturnOutput(string)
     platformedPath = os.path.abspath(filename) ## converts possible "adir/afile.txt" to "C:\the\whole\path\adir\afile.txt" if needed
     with open(platformedPath, 'w') as outfile:
         outfile.write(output)
