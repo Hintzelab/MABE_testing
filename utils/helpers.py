@@ -53,9 +53,15 @@ def copyfileAndPermissions(source,destination): ## uses shutil, stat, and os to 
         sd.SetSecurityDescriptorDacl (1, dacl, 0)
         win32security.SetFileSecurity (destination, win32security.DACL_SECURITY_INFORMATION, sd)
     else:
-        st = os.stat(source)
-        os.chown(destination, st[stat.ST_UID], st[stat.ST_GID])
-        os.chown(destination, st[stat.ST_MODE])
+        runCmdAndHideOutput('chmod 755 '+destination ) ## my wonderful hack O_o
+        ## the below efforts don't work on the HPCC for some reason...
+        #st = os.stat(source)
+        #os.chown(destination, 0o755)
+        #os.chown(destination, 0o755, 0o20)
+        #os.chown(destination, st[stat.ST_UID], st[stat.ST_GID])
+        #os.chown(destination, st.st_mode, st[stat.ST_UID])
+        #os.chown(destination, st[stat.ST_UID], st[stat.ST_GID])
+        #os.chown(destination, st.st_mode | stat.S_IRWXU, stat.S_IRGRP)
 
 def movefile(source,destination): ## alias for shutil.move
     shutil.move(source,destination)
