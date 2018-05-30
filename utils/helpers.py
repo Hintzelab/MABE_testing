@@ -31,12 +31,14 @@ path_baseline_exe = os.path.join(dirname_baseline,mabe)
 path_testline_exe = os.path.join(dirname_testline,mabe)
 
 def isGCCAvail():
-    proc = subprocess.Popen("which c++", shell=True, stdout=subprocess.PIPE, bufsize=1)
+    proc = subprocess.Popen("which c++", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, bufsize=1)
     out,err = proc.communicate()
+    output = out.decode()+err.decode()
     gccFound = False if out.decode()[0:6] == "which:" else True
-    proc = subprocess.Popen("which c++.exe", shell=True, stdout=subprocess.PIPE, bufsize=1)
+    proc = subprocess.Popen("which c++.exe", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, bufsize=1)
     out,err = proc.communicate()
-    gccFound = gccFound if out.decode()[0:6] == "which:" else True
+    output = out.decode()+err.decode()
+    gccFound = gccFound if output[0:6] == "which:" else True
     return gccFound
 
 def thisTestName(ignoreStackDepth=1):
