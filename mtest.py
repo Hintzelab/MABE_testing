@@ -13,8 +13,8 @@ import git
 import pytest
 
 from utils.helpers import copyfileAndPermissions, this_repo_path, mabe, dotSlashMabe, dirname_baseline, dirname_testline, path_baseline_exe, path_testline_exe
-from utils.helpers import cd, runCmdAndShowOutput, runCmdAndReturnOutput, runCmdAndSaveOutput, rmAllDiffFiles
-from utils.helpers import rmfile
+from utils.helpers import cd, runCmdAndHideOutput, runCmdAndShowOutput, runCmdAndReturnOutput, runCmdAndSaveOutput, rmAllDiffFiles
+from utils.helpers import rmfile, isGCCAvail
 
 ## TODO: add ability to pass arguments to mbuild
 
@@ -49,7 +49,39 @@ def writeDefaultBuildOptions():
     with open("buildOptions.txt",'w') as bo:
         bo.write(content)
 
+def callMBuildToBuild():
+    runCmdAndHideOutput("python pythonTools/mbuild.py -p{cores}".format(cores=str(psutil.cpu_count(logical=False))))
+
+def callMBuildToInitBuildOptions():
+    runCmdAndHideOutput("python pythonTools/mbuild.py -i") ## regenerate buildOptions with ALL available modules
+
+def callMBuildToMakeVSProj():
+    runCmdAndHideOutput("python pythonTools/mbuild.py -g vs")
+
+gccNotFoundErrorMessage = "Error: GCC not found (c++)"
+useVSMessage = """
+
+Visual Studio projects generated. Please manually build 
+the project in your repository and place the resulting
+mabe executable in that project directory if it isn't, then 
+build the project in mabe_testing/baseline/ and make
+sure the resulting executable is in mabe_testing/baseline/
+if it isn't, then rerun this script
+
+"""
+
+def checkForCompilerAndCompileOrMakeProjs():
+    if isGCCAvail():
+        callMBuildToBuild()
+    else:
+        if os.platform() != "Windows":
+            print(gccNotFoundErrorMessage)
+            sys.exit()
+        else:
+            callMBuildToMakeVSProj()
+
 def compile_default_projects(args):
+    VSprojsCreated = False
     if not os.path.isfile(path_baseline_exe) or args.force:
         print("clone new",args.branch,"at",args.commit,"as baseline", flush=True)
         shutil.rmtree(dirname_baseline,ignore_errors=True)
@@ -60,19 +92,23 @@ def compile_default_projects(args):
         print("building baseline", flush=True)
         rmfile("buildOptions.txt") ## remove buildOptions so we can regenerate it
         writeDefaultBuildOptions()
-        subprocess.run("python pythonTools/mbuild.py -i", shell=True, check=True) ## regenerate buildOptions with ALL available modules
-        subprocess.run("python pythonTools/mbuild.py -p{cores}".format(cores=str(psutil.cpu_count(logical=False))), shell=True, check=True)
+        callMBuildToInitBuildOptions()
+        checkForCompilerAndCompileOrMakeProjs()
         cd("..")
     if not os.path.isfile(os.path.join('..',mabe)):
         cd("..")
         print("building testline", flush=True)
         rmfile("buildOptions.txt") ## remove buildOptions so we can regenerate it
         writeDefaultBuildOptions()
-        subprocess.run("python pythonTools/mbuild.py -i", shell=True, check=True) ## regenerate buildOptions with ALL available modules
-        subprocess.run("python pythonTools/mbuild.py -p{cores}".format(cores=str(psutil.cpu_count(logical=False))), shell=True, check=True)
+        callMBuildToInitBuildOptions()
+        checkForCompilerAndCompileOrMakeProjs()
         cd(this_repo_path)
     os.makedirs(dirname_testline, exist_ok=True)
-    copyfileAndPermissions(os.path.join('..',mabe), path_testline_exe)
+    if (not os.path.isfile(path_baseline_exe)) or (not os.path.isfile(os.path.join('..',mabe))):
+        print(useVSMessage)
+        sys.exit()
+    else:
+        copyfileAndPermissions(os.path.join('..',mabe), path_testline_exe)
 
 if __name__ == '__main__':
     main()

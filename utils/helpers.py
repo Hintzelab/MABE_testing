@@ -30,6 +30,15 @@ dirname_testline = 'testline/' ## dirname for new build to compare with old base
 path_baseline_exe = os.path.join(dirname_baseline,mabe)
 path_testline_exe = os.path.join(dirname_testline,mabe)
 
+def isGCCAvail():
+    proc = subprocess.Popen("which c++", shell=True, stdout=subprocess.PIPE, bufsize=1)
+    out,err = proc.communicate()
+    gccFound = False if out.decode()[0:6] == "which:" else True
+    proc = subprocess.Popen("which c++.exe", shell=True, stdout=subprocess.PIPE, bufsize=1)
+    out,err = proc.communicate()
+    gccFound = gccFound if out.decode()[0:6] == "which:" else True
+    return gccFound
+
 def thisTestName(ignoreStackDepth=1):
     return inspect.stack()[ignoreStackDepth][3]
 
