@@ -12,7 +12,7 @@ pyreq.require("gitpython:git,pytest")
 import git
 import pytest
 
-from utils.helpers import copyfileAndPermissions, this_repo_path, mabe, dirname_baseline, dirname_testline, path_baseline_exe, path_testline_exe
+from utils.helpers import copyfileAndPermissions, this_repo_path, mabe, dotSlashMabe, dirname_baseline, dirname_testline, path_baseline_exe, path_testline_exe
 from utils.helpers import cd, runCmdAndShowOutput, runCmdAndReturnOutput, runCmdAndSaveOutput, rmAllDiffFiles
 from utils.helpers import rmfile
 

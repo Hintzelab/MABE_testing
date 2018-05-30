@@ -1,5 +1,5 @@
 import os, subprocess, pytest
-from utils.helpers import this_repo_path, mabe, dirname_baseline, dirname_testline, path_baseline_exe, path_testline_exe
+from utils.helpers import this_repo_path, mabe, dotSlashMabe, dirname_baseline, dirname_testline, path_baseline_exe, path_testline_exe
 from utils.helpers import cd, diff, repoDiff, runCmdAndHideOutput, runCmdAndShowOutput, runCmdAndSaveOutput, getFileContents
 from utils.helpers import copyfileAndPermissions, movefile, movefileSwap
 from utils.helpers import thisTestName, repoDiffForDifference, repoDiffForSimilarity, diffForDifference, diffForSimilarity
@@ -19,11 +19,11 @@ def ctx(): ## create a context for all the tests - you could potentially use thi
         for eachdir in dirs: ## loop through each of baseline and testline and generate the files for later diffing
             cd(this_repo_path)
             cd(eachdir)
-            runStr = "./"+mabe+" -s"
+            runStr = dotSlashMabe+" -s"
             runCmdAndSaveOutput( runStr, filename='screen-settings' ) ## save settings to file
             for eachfile in ["settings.cfg", "settings_organism.cfg", "settings_world.cfg"]: ## make a backup of the settings files
                 copyfileAndPermissions(eachfile, eachfile+".bak")
-            runStr = "./"+mabe+" -f settings*.cfg -s"
+            runStr = dotSlashMabe+" -f settings*.cfg -s"
             runCmdAndSaveOutput( runStr, filename='screen-settings-reload' ) ## load and save settings to file
             for eachfile in ["settings.cfg", "settings_organism.cfg", "settings_world.cfg"]: ## make a backup of the settings files
                 copyfileAndPermissions(eachfile, eachfile+".bak")

@@ -1,5 +1,5 @@
 import os, subprocess, pytest
-from utils.helpers import this_repo_path, mabe, dirname_baseline, dirname_testline, path_baseline_exe, path_testline_exe
+from utils.helpers import this_repo_path, mabe, dotSlashMabe, dirname_baseline, dirname_testline, path_baseline_exe, path_testline_exe
 from utils.helpers import cd, diff, repoDiff, runCmdAndHideOutput, runCmdAndShowOutput, runCmdAndSaveOutput, getFileContents
 from utils.helpers import thisTestName, repoDiffForDifference, repoDiffForSimilarity, diffForDifference, diffForSimilarity
 
@@ -14,7 +14,7 @@ def ctx(): ## create a context for all the tests - you could potentially use thi
     if not ctx.ran: ## prevents reinit before each and every test fn in this module
         ## generate cfg (have to 'cd' there, because mabe '-s' ignores 'GLOBAL-outputDirectory' setting)
         ## and run mabe with defaults
-        runStr = "./"+mabe+" -p GLOBAL-randomSeed {seed} GLOBAL-updates 1 ARCHIVIST_LODWAP-terminateAfter 0"
+        runStr = dotSlashMabe+" -p GLOBAL-randomSeed {seed} GLOBAL-updates 1 ARCHIVIST_LODWAP-terminateAfter 0"
         dirs = [dirname_baseline, dirname_testline]
         for eachdir in dirs: ## loop through each of baseline and testline and generate the files for later diffing
             cd(this_repo_path)

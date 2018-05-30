@@ -1,7 +1,8 @@
 import os, subprocess, pytest
-from utils.helpers import this_repo_path, mabe, dirname_baseline, dirname_testline, path_baseline_exe, path_testline_exe
+from utils.helpers import this_repo_path, mabe, dotSlashMabe, dirname_baseline, dirname_testline, path_baseline_exe, path_testline_exe
 from utils.helpers import cd, diff, repoDiff, runCmdAndHideOutput, runCmdAndShowOutput, runCmdAndSaveOutput, getFileContents
 from utils.helpers import thisTestName, repoDiffForDifference, repoDiffForSimilarity, diffForDifference, diffForSimilarity
+from utils.helpers import copyfileAndPermissions
 
 ##
 ## all tests run IN ORDER OF DEFINITION and are run if they begin with 'test_'
@@ -18,14 +19,14 @@ def ctx(): ## create a context for all the tests - you could potentially use thi
         for eachdir in dirs: ## loop through each of baseline and testline and generate the files for later diffing
             cd(this_repo_path)
             cd(eachdir)
-            runCmdAndSaveOutput( "./{exe} -s".format(exe=mabe), filename='screen-settings' )
-            runCmdAndSaveOutput( "./{exe} -h".format(exe=mabe), filename='screen-help' )
-            runCmdAndSaveOutput( "./{exe} -l".format(exe=mabe), filename='screen-poploader' )
-            runCmdAndSaveOutput( "./{exe} -v".format(exe=mabe), filename='screen-version' )
-            runCmdAndSaveOutput( "./{exe}".format(exe=mabe), filename='screen-simulation' )
-            cd('..') ## could also have done cd(this_repo_path)
-        ## FYI, could have done it the following way if we were up one dir in mabe_testing
-        #runCmdAndSaveOutput( "{exe} -p GLOBAL-outputDirectory {path}".format(exe=path_baseline_exe, path=dirname_baseline), filename=dirname_baseline+'screen-simulation' )
+            runCmdAndSaveOutput( "{exe} -s".format(exe=dotSlashMabe), filename='screen-settings' )
+            runCmdAndSaveOutput( "{exe} -h".format(exe=dotSlashMabe), filename='screen-help' )
+            runCmdAndSaveOutput( "{exe} -l".format(exe=dotSlashMabe), filename='screen-poploader' )
+            runCmdAndSaveOutput( "{exe} -v".format(exe=dotSlashMabe), filename='screen-version' )
+            runCmdAndSaveOutput( "{exe}".format(exe=dotSlashMabe), filename='screen-simulation' )
+            cd('..') ## could also have done cd(thisdotSlashMrepo_path)
+        ## FYI, could have done it the following waydotSlashMif we were up one dir in mabe_testing
+        #runCmdAndSaveOutput( "{exe} -p GLOBAL-outpudotSlashMDirectory {path}".format(exe=path_baseline_exe, path=dirname_baseline), filename=dirname_baseline+'screen-simulation' )
         ctx.ran = True
 
     yield None ## could have actually passed a context object here to all the test fns
