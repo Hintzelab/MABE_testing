@@ -98,9 +98,7 @@ def compile_default_projects(args):
     if not os.path.isfile(os.path.join('..',mabe)):
         cd("..")
         print("building testline", flush=True)
-        rmfile("buildOptions.txt") ## remove buildOptions so we can regenerate it
-        writeDefaultBuildOptions()
-        callMBuildToInitBuildOptions()
+        shutil.copy('mabe_testing/baseline/buildOptions.txt','.')
         checkForCompilerAndCompileOrMakeProjs()
         cd(this_repo_path)
     os.makedirs(dirname_testline, exist_ok=True)
