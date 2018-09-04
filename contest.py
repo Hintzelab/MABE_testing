@@ -1,3 +1,5 @@
+# author: joryschossau (see github.com/joryschossau/contest)
+# this is an untouched fork of `contest` from joryschossau
 
 import argparse
 import os
