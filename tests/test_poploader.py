@@ -1,5 +1,5 @@
 import os, subprocess, pytest
-from utils.helpers import this_repo_path, mabe, dotSlashMabe, dirname_baseline, dirname_testline, path_baseline_exe, path_testline_exe
+from utils.helpers import this_repo_path, exe_name, EXE, slash, dirname_baseline, dirname_testline, path_baseline_exe, path_testline_exe
 from utils.helpers import cd, diff, repoDiff, runCmdAndHideOutput, runCmdAndShowOutput, runCmdAndSaveOutput, getFileContents
 from utils.helpers import copyfileAndPermissions, buildMessageErrorExpectedWithArgs
 from utils.helpers import thisTestName, repoDiffForDifference, repoDiffForSimilarity, diffForDifference, diffForSimilarity
@@ -10,7 +10,7 @@ from utils.helpers import thisTestName, repoDiffForDifference, repoDiffForSimila
 ## use `assert condition, "error message"` in a test_fn() to print a useful message on failure
 ##
 
-brainTestString = dotSlashMabe+' -p BRAIN-brainType {brainT} GLOBAL-initPop "MASTER = {initPop}" GLOBAL-updates {updates}'
+brainTestString = EXE+' -p BRAIN-brainType {brainT} GLOBAL-initPop "MASTER = {initPop}" GLOBAL-updates {updates}'
 brainTestStringWithSaving = brainTestString+' ARCHIVIST_LODWAP-dataSequence :10 ARCHIVIST_LODWAP-organismsSequence :10 ARCHIVIST_LODWAP-terminateAfter 0 ARCHIVIST_DEFAULT-writeSnapshotDataFiles 1 ARCHIVIST_DEFAULT-writeSnapshotOrganismsFiles 1 ARCHIVIST_DEFAULT-snapshotOrganismsSequence :10 ARCHIVIST_DEFAULT-snapshotDataSequence :10'
 
 @pytest.fixture ## indicates this is the constructor fn for all the test fns in this module
@@ -22,7 +22,7 @@ def ctx(): ## create a context for all the tests - you could potentially use thi
         for eachdir in dirs: ## loop through each of baseline and testline and generate the files for later diffing
             cd(this_repo_path)
             cd(eachdir)
-            runCmdAndSaveOutput( "{exe} -l".format(exe=dotSlashMabe), filename='screen-plf' )
+            runCmdAndSaveOutput( "{exe} -l".format(exe=EXE), filename='screen-plf' )
             runCmdAndHideOutput( brainTestStringWithSaving.format( brainT='CGP', initPop='default 100', updates='10' ) ) ## generate large snapshot_organisms_10.csv
             runCmdAndHideOutput( brainTestStringWithSaving.format( brainT='CGP', initPop='default 1', updates='1' ) ) ## generate small snapshot_organisms_0.csv
             cd('..') ## could also have done cd(this_repo_path)

@@ -6,6 +6,7 @@ from utils import pyreq
 pyreq.require('difflib,gitpython:git,pytest')
 import difflib
 import pytest
+import git
 
 if platform.system() == 'Windows':
     import win32api
@@ -16,19 +17,48 @@ if platform.system() == 'Windows':
 this_repo_path = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 
 if platform.system() == 'Windows': ## mtest can still be run on windows if you have the exes already compiled in the right places (baseline/ and testline/)
-    mabe = 'mabe.exe'
-    dotSlashMabe = mabe
+    slash = "\\\\"
 else:
-    mabe = 'mabe'
-    dotSlashMabe = './mabe'
+    slash = "/"
+exe_name='' ## cross-module definitions
+EXE='' ## full dot-slash exe name: ./exe_name
 
 ## TODO: add ability to pass arguments to mbuild
 
 dirname_baseline = 'baseline/' ## dirname for old baseline build (used to compare new code)
 dirname_testline = 'testline/' ## dirname for new build to compare with old baseline
 
-path_baseline_exe = os.path.join(dirname_baseline,mabe)
-path_testline_exe = os.path.join(dirname_testline,mabe)
+path_baseline_exe = ''
+path_testline_exe = ''
+
+def is_repo_at_commit(local_repo_path,user_branch,user_commit):
+    if os.path.isdir(local_repo_path)==False: return False
+    if os.path.isdir(os.path.join(local_repo_path,'.git'))==False: return False
+    repo = None
+    try:
+        repo = git.Repo(local_repo_path)
+    except git.exc.InvalidGitRepositoryError:
+        return False
+    commit = user_commit
+    if commit == 'HEAD': commit = repo.refs[user_branch].commit.hexsha
+    return repo.head.commit.hexsha.startswith(commit)
+
+def get_branch_and_commit(user_branch):
+    branch = user_branch
+    commit = 'HEAD'
+    if ':' in user_branch: ## checkout branch at revision (ex: user_branch = 'master:5af88d6d5f')
+        branch,commit = user_branch.split(':')
+    return (branch,commit)
+
+def is_local_repo(user_repo):
+    if user_repo.startswith('git@') or user_repo.startswith('http'):
+        return False
+    else:
+        if os.path.isdir(user_repo):
+            return True
+        else:
+            print("Error: {} is not a valid local or remote repository".format(user_repo))
+            sys.exit(1)
 
 def isGCCAvail():
     proc = subprocess.Popen("which c++", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, bufsize=1)
@@ -74,6 +104,14 @@ def copyfileAndPermissions(source,destination): ## uses shutil, stat, and os to 
         #os.chown(destination, st[stat.ST_UID], st[stat.ST_GID])
         #os.chown(destination, st.st_mode | stat.S_IRWXU, stat.S_IRGRP)
 
+def enableWriteFlagForGitRepoFiles(git_repo):
+    if platform.system() == "Windows":
+        packDir = os.path.join(git_repo,'.git','objects','pack')
+        if os.path.isdir(packDir):
+            for dpaths, dnames, fnames in os.walk(packDir):
+                for filename in fnames:
+                    print("do magic on {}".format(filename))
+
 def movefile(source,destination): ## alias for shutil.move
     shutil.move(source,destination)
 
@@ -98,6 +136,22 @@ def getFileContents(filename): ## helper fn to load a file and return contents a
         contents=infile.readlines()
     return contents
 
+def repoSaveFiles(filename, testName, errorMsg):
+    if not os.path.isdir(os.path.join(this_repo_path,'failed')): os.makedirs(os.path.join(this_repo_path,'failed'))
+    if not os.path.isdir(os.path.join(this_repo_path,'failed',testName)): os.makedirs(os.path.join(this_repo_path,'failed',testName))
+    with open(os.path.join(this_repo_path,'failed',testName,'log.'+testName+'.txt'),'w+') as log:
+        log.write(errorMsg)
+    shutil.copyfile(os.path.join(this_repo_path,dirname_baseline,filename),os.path.join(this_repo_path,'failed',testName,dirname_baseline[:-1]+'.'+filename))
+    shutil.copyfile(os.path.join(this_repo_path,dirname_testline,filename),os.path.join(this_repo_path,'failed',testName,dirname_testline[:-1]+'.'+filename))
+
+def saveFiles(file1, file2, testName, errorMsg):
+    if not os.path.isdir(os.path.join(this_repo_path,'failed')): os.makedirs(os.path.join(this_repo_path,'failed'))
+    if not os.path.isdir(os.path.join(this_repo_path,'failed',testName)): os.makedirs(os.path.join(this_repo_path,'failed',testName))
+    with open(os.path.join(this_repo_path,'failed',testName,'log.'+testName+'.txt'),'w+') as log:
+        log.write(errorMsg)
+    shutil.copyfile(os.path.abspath(file1),os.path.join(this_repo_path,'failed',testName,file1))
+    shutil.copyfile(os.path.abspath(file2),os.path.join(this_repo_path,'failed',testName,file2))
+
 def diff(file1, file2, outfilename, expectDifferent=False, ignoreStackDepth=2): ## helper fn diffing 2 arbitrary files
     outfilename = re.sub('[/]','',outfilename) ## remove possible trailing 
     with open(os.path.abspath(file1)) as a, open(os.path.abspath(file2)) as b:
@@ -111,9 +165,9 @@ def diff(file1, file2, outfilename, expectDifferent=False, ignoreStackDepth=2): 
             with open(os.path.abspath(outfilename), 'w') as outfile:
                 outfile.write(''.join(difflines))
         if expectDifferent:
-            assert numDiffLines != 0, thisTestName(ignoreStackDepth=ignoreStackDepth)+": {name1} and {name2} should be different)".format(name1=file1, name2=file2)
+            assert numDiffLines != 0, thisTestName(ignoreStackDepth=ignoreStackDepth)+": {name1} and {name2} should be different)".format(name1=file1, name2=file2) and saveFiles(file1, file2, thisTestName(ignoreStackDepth=ignoreStackDepth),"{name1} and {name2} should be different".format(name1=file1,name2=file2)+'\n'+''.join(difflines))
         else:
-            assert numDiffLines == 0, thisTestName(ignoreStackDepth=ignoreStackDepth)+": {ndiffs} changes (see diff-{name})".format(a=file1, b=file2, ndiffs=str(numDiffs), name=outfilename )
+            assert numDiffLines == 0, thisTestName(ignoreStackDepth=ignoreStackDepth)+": {ndiffs} changes (see diff-{name})".format(a=file1, b=file2, ndiffs=str(numDiffs), name=outfilename ) and saveFiles(file1, file2, thisTestName(ignoreStackDepth=ignoreStackDepth),"{ndiffs} changes (see diff-{name})".format(ndiffs=str(numDiffs), name=file1)+'\n'+''.join(difflines))
 
 def diffForDifference(file1, file2, outfilename):
     diff(file1, file2, outfilename, expectDifferent=True, ignoreStackDepth=3)
@@ -134,9 +188,9 @@ def repoDiff(filename, expectDifferent=False, ignoreStackDepth=2): ## helper fn 
             with open(outfilename, 'w') as outfile:
                 outfile.write(''.join(difflines))
         if expectDifferent:
-            assert numDiffLines != 0, thisTestName(ignoreStackDepth=ignoreStackDepth)+": Expected differences in {name} between baseline & testline.".format( name=filename )
+            assert numDiffLines != 0, thisTestName(ignoreStackDepth=ignoreStackDepth)+": Expected differences in {name} between baseline & testline.".format( name=filename ) and repoSaveFiles(filename,thisTestName(ignoreStackDepth=ignoreStackDepth),"Expected differences in {name} between baseline & testline.".format( name=filename )+'\n'+''.join(difflines))
         else:
-            assert numDiffLines == 0, thisTestName(ignoreStackDepth=ignoreStackDepth)+": {ndiffs} changes (see diff-{name})".format( ndiffs=str(numDiffs), name=filename )
+            assert numDiffLines == 0, thisTestName(ignoreStackDepth=ignoreStackDepth)+": {ndiffs} changes (see diff-{name})".format( ndiffs=str(numDiffs), name=filename ) and repoSaveFiles(filename,thisTestName(ignoreStackDepth=ignoreStackDepth),"{ndiffs} changes (see diff-{name})".format( ndiffs=str(numDiffs), name=filename )+'\n'+''.join(difflines))
 
 def repoDiffForDifference(filename):
     repoDiff(filename, expectDifferent=True, ignoreStackDepth=3)

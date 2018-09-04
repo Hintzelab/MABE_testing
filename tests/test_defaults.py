@@ -1,5 +1,5 @@
 import os, subprocess, pytest
-from utils.helpers import this_repo_path, mabe, dotSlashMabe, dirname_baseline, dirname_testline, path_baseline_exe, path_testline_exe
+from utils.helpers import this_repo_path, exe_name, EXE, slash, dirname_baseline, dirname_testline, path_baseline_exe, path_testline_exe
 from utils.helpers import cd, diff, repoDiff, runCmdAndHideOutput, runCmdAndShowOutput, runCmdAndSaveOutput, getFileContents
 from utils.helpers import thisTestName, repoDiffForDifference, repoDiffForSimilarity, diffForDifference, diffForSimilarity
 from utils.helpers import copyfileAndPermissions
@@ -19,11 +19,11 @@ def ctx(): ## create a context for all the tests - you could potentially use thi
         for eachdir in dirs: ## loop through each of baseline and testline and generate the files for later diffing
             cd(this_repo_path)
             cd(eachdir)
-            runCmdAndSaveOutput( "{exe} -s".format(exe=dotSlashMabe), filename='screen-settings' )
-            runCmdAndSaveOutput( "{exe} -h".format(exe=dotSlashMabe), filename='screen-help' )
-            runCmdAndSaveOutput( "{exe} -l".format(exe=dotSlashMabe), filename='screen-poploader' )
-            runCmdAndSaveOutput( "{exe} -v".format(exe=dotSlashMabe), filename='screen-version' )
-            runCmdAndSaveOutput( "{exe}".format(exe=dotSlashMabe), filename='screen-simulation' )
+            runCmdAndSaveOutput( "{exe} -s".format(exe=EXE), filename='screen-settings' )
+            runCmdAndSaveOutput( "{exe} -h".format(exe=EXE), filename='screen-help' )
+            runCmdAndSaveOutput( "{exe} -l".format(exe=EXE), filename='screen-poploader' )
+            runCmdAndSaveOutput( "{exe} -v".format(exe=EXE), filename='screen-version' )
+            runCmdAndSaveOutput( "{exe}".format(exe=EXE), filename='screen-simulation' )
             cd('..') ## could also have done cd(thisdotSlashMrepo_path)
         ## FYI, could have done it the following waydotSlashMif we were up one dir in mabe_testing
         #runCmdAndSaveOutput( "{exe} -p GLOBAL-outpudotSlashMDirectory {path}".format(exe=path_baseline_exe, path=dirname_baseline), filename=dirname_baseline+'screen-simulation' )
