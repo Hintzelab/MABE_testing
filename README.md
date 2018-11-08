@@ -71,6 +71,7 @@ python contest.py https://github.com/hintzelab/mabe development feature-myfeatur
 ```
 
 More advanced testing
+</br>
 Here, we run only a subset of the tests using a grammar-style search string "reload and brains and Markov", basing both branches off the local repo up one directory, and overriding buildOptions with a custom one before building:
 ```
 python contest.py -s "reload and brains and Markov" ../ development mybranch \
