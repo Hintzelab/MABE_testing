@@ -10,56 +10,57 @@ from utils.helpers import thisTestName, repoDiffForDifference, repoDiffForSimila
 ## use `assert condition, "error message"` in a test_fn() to print a useful message on failure
 ##
 
-brainTestString = EXE+' -p BRAIN-brainType {brainT} GLOBAL-initPop "MASTER = {initPop}" GLOBAL-updates {updates}'
-brainTestStringWithSaving = brainTestString+' ARCHIVIST_LODWAP-dataSequence :10 ARCHIVIST_LODWAP-organismsSequence :10 ARCHIVIST_LODWAP-terminateAfter 0 ARCHIVIST_DEFAULT-writeSnapshotDataFiles 1 ARCHIVIST_DEFAULT-writeSnapshotOrganismsFiles 1 ARCHIVIST_DEFAULT-snapshotOrganismsSequence :10 ARCHIVIST_DEFAULT-snapshotDataSequence :10'
+savingParams =  ' ARCHIVIST_LODWAP-dataSequence :10 ARCHIVIST_LODWAP-organismsSequence :10 ARCHIVIST_LODWAP-terminateAfter 0 ARCHIVIST_DEFAULT-writeSnapshotDataFiles 1 ARCHIVIST_DEFAULT-writeSnapshotOrganismsFiles 1 ARCHIVIST_DEFAULT-snapshotOrganismsSequence :10 ARCHIVIST_DEFAULT-snapshotDataSequence :10'
 
-@pytest.fixture ## indicates this is the constructor fn for all the test fns in this module
-def ctx(): ## create a context for all the tests - you could potentially use this to pass an obj to all test fns
-    if not ctx.ran: ## prevents reinit before each and every test fn in this module
-        ## generate cfg (have to 'cd' there, because mabe '-s' ignores 'GLOBAL-outputDirectory' setting)
-        ## and run mabe with defaults
-        dirs = [dirname_baseline, dirname_testline]
-        for eachdir in dirs: ## loop through each of baseline and testline and generate the files for later diffing
+brainTestString = EXE+' -p BRAIN-brainType {brainT} GLOBAL-initPop "MASTER = {initPop}" GLOBAL-updates {updates}'
+brainTestStringWithSaving = brainTestString + savingParams
+
+testString = EXE+' -p GLOBAL-initPop "MASTER = {initPop}" GLOBAL-updates {updates}'
+testStringWithSaving = testString + savingParams
+
+generate_default_csv_files_RAN = False
+def generate_default_csv_files():
+    global generate_default_csv_files_RAN
+    if not generate_default_csv_files_RAN:
+        for eachdir in [dirname_baseline, dirname_testline]: ## loop through each of baseline and testline and generate the files for later diffing
             cd(this_repo_path)
             cd(eachdir)
             runCmdAndSaveOutput( "{exe} -l".format(exe=EXE), filename='screen-plf' )
-            runCmdAndHideOutput( brainTestStringWithSaving.format( brainT='CGP', initPop='default 100', updates='10' ) ) ## generate large snapshot_organisms_10.csv
-            runCmdAndHideOutput( brainTestStringWithSaving.format( brainT='CGP', initPop='default 1', updates='1' ) ) ## generate small snapshot_organisms_0.csv
-            cd('..') ## could also have done cd(this_repo_path)
-        ctx.ran = True
-
-    yield None ## could have actually passed a context object here to all the test fns
-    ##
-    ## teardown happens after the last test in the module finishes
-    ##
-    return
-ctx.ran = False
+            runCmdAndHideOutput( testStringWithSaving.format( initPop='default 100', updates='10' ) ) ## generate large snapshot_organisms_10.csv
+            runCmdAndHideOutput( testStringWithSaving.format( initPop='default 1', updates='1' ) ) ## generate small snapshot_organisms_0.csv
+            cd('..')
+        generate_default_csv_files_RAN = True
 
 ## testing consistency of screen output
-def test_screen_poploader(ctx):
+def test_screen_poploader():
+    generate_default_csv_files()
     repoDiffForSimilarity('screen-plf')
 
 ## generated files
-def test_plf(ctx):
+def test_plf():
+    generate_default_csv_files()
     repoDiffForSimilarity('population_loader.plf')
-def test_lod_data(ctx):
+def test_lod_data():
+    generate_default_csv_files()
     repoDiffForSimilarity('LOD_data.csv')
-def test_lod_organisms(ctx):
+def test_lod_organisms():
+    generate_default_csv_files()
     repoDiffForSimilarity('LOD_organisms.csv')
-def test_saving(ctx):
+def test_saving():
+    generate_default_csv_files()
     repoDiffForSimilarity('snapshot_organisms_0.csv')
-def test_screen_loading(ctx):
+def test_screen_loading():
+    generate_default_csv_files()
     for eachdir in [dirname_baseline, dirname_testline]: ## loop through each of baseline and testline and generate the files for later diffing
         cd(eachdir)
-        runStr = brainTestStringWithSaving.format(
-                 brainT="CGP",
+        runStr = testStringWithSaving.format(
                  initPop="'snapshot_organisms_0.csv'",
                  updates="1"
                  )
         runCmdAndSaveOutput(runStr, filename='screen-poploading') ## generate snapshot_organisms_0.csv
         cd('..') ## could also have done cd(this_repo_path)
     repoDiffForSimilarity('screen-poploading')
-def test_saving_after_loading(ctx):
+def test_saving_after_loading():
     repoDiffForSimilarity('snapshot_organisms_0.csv')
 
 ##
@@ -67,7 +68,8 @@ def test_saving_after_loading(ctx):
 ##
 @pytest.mark.parametrize('numToLoad', [1,5,50,100], ids=['1','5','50','100'])
 @pytest.mark.parametrize('mostCommand', ['greatest','least'], ids=['greatest','least'])
-def test_reload_most_byid_noerror(ctx,numToLoad,mostCommand):
+def test_reload_most_byid_noerror(numToLoad,mostCommand):
+    generate_default_csv_files()
     outputFilename = 'screen-reload-{most}-byid-{num}'.format(
                       most=mostCommand, num=str(numToLoad)
                       )
@@ -78,8 +80,7 @@ def test_reload_most_byid_noerror(ctx,numToLoad,mostCommand):
                   most=mostCommand,
                   amount=str(numToLoad)
                   )
-        runStr = brainTestString.format(
-                 brainT='CGP',
+        runStr = testString.format(
                  initPop=initPop,
                  updates="1"
                  )
@@ -94,7 +95,8 @@ def test_reload_most_byid_noerror(ctx,numToLoad,mostCommand):
 @pytest.mark.parametrize('numToLoad', [-1,0,101], ids=['(-1)','(0)','(101)'])
 @pytest.mark.parametrize('mostCommand', ['greatest','least'], ids=['greatest','least'])
 @pytest.mark.parametrize('dirToTest', [dirname_baseline, dirname_testline], ids=['baseline','testline'])
-def test_reload_most_byid_error(ctx,numToLoad,mostCommand,dirToTest):
+def test_reload_most_byid_error(numToLoad,mostCommand,dirToTest):
+    generate_default_csv_files()
     errorMessage = buildMessageErrorExpectedWithArgs( dirToTest,mostCommand,numToLoad ) ## returns this fn name, the args, and that error was expected
     with pytest.raises(subprocess.CalledProcessError, message=errorMessage):
         cd(this_repo_path) ## reset after possible error
@@ -103,8 +105,7 @@ def test_reload_most_byid_error(ctx,numToLoad,mostCommand,dirToTest):
                   most=mostCommand,
                   amount=str(numToLoad)
                   )
-        runStr = brainTestString.format(
-                 brainT='CGP',
+        runStr = testString.format(
                  initPop=initPop,
                  updates="1"
                  )
@@ -113,11 +114,13 @@ def test_reload_most_byid_error(ctx,numToLoad,mostCommand,dirToTest):
 ## test reloading of brains and make sure generation 0 saved out is the same as the originally loaded file
 ## WARNING: This test assumest 'greatest by id' works
 @pytest.mark.parametrize('brainType', ['CGP','LSTM','ConstantValues','Wire','Markov'], ids=['CGP','LSTM','ConstantValues','Wire','Markov'])
-def test_reload_brains(ctx, brainType):
+def test_reload_brains(brainType):
     initPopLoading="greatest 1 by ID from {'snapshot_organisms_0.csv'}"
     for eachdir in [dirname_baseline, dirname_testline]: ## loop through each of baseline and testline and generate the files for later diffing
         cd(this_repo_path)
         cd(eachdir)
+        runCmdAndHideOutput( brainTestStringWithSaving.format( brainT=brainType, initPop='default 100', updates='10' ) ) ## generate large snapshot_organisms_10.csv
+        runCmdAndHideOutput( brainTestStringWithSaving.format( brainT=brainType, initPop='default 1', updates='1' ) ) ## generate small snapshot_organisms_0.csv
         runStr = brainTestStringWithSaving.format(
                  brainT=brainType,
                  initPop="default 1",
