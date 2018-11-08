@@ -68,3 +68,9 @@ Test your `mymabe` build against development
 ```
 python mtest.py development
 ```
+
+More advanced testing
+```
+python contest.py -s "reload and brains and Markov" ../ development mybranch \
+"cp ~/custom/buildOptions.txt . && python pythonTools/mbuild.py -g make && make -j24" mabe
+```
