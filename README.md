@@ -71,5 +71,6 @@ python mtest.py development
 
 More advanced testing
 ```
-python contest.py -s "reload brains Markov" ../ development development "cp ~/projects/mabetest/buildOptions.txt . && python pythonTools/mbuild.py -g make && make -j24" ./mabe
+python contest.py -s "reload and brains and Markov" ../ development mybranch \
+"cp ~/custom/buildOptions.txt . && python pythonTools/mbuild.py -g make && make -j24" mabe
 ```
