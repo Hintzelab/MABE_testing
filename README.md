@@ -65,7 +65,7 @@ git clone https://github.com/hintzelab/mabe_testing
 cd mabe_testing
 ```
 
-Test your `mymabe` build against development with all tests
+Test your `feature-myfeature` branch against development with all tests
 ```
 python contest.py https://github.com/hintzelab/mabe development feature-myfeature "python pythonTools/mbuild.py -p4" mabe
 ```
