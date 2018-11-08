@@ -50,6 +50,7 @@ positional arguments:
 optional arguments:
   -h, --help            show this help message and exit
   -f, --force           force new download and compile
+  -nb, --nobuild        skips the build step, (if already built)
   -s SUBSET, --subset SUBSET
                         test filter expression: "defaults and not settings"
 ```
@@ -64,12 +65,13 @@ git clone https://github.com/hintzelab/mabe_testing
 cd mabe_testing
 ```
 
-Test your `mymabe` build against development
+Test your `mymabe` build against development with all tests
 ```
-python mtest.py development
+python contest.py https://github.com/hintzelab/mabe development feature-myfeature "python pythonTools/mbuild.py -p4" mabe
 ```
 
 More advanced testing
+Here, we run only a subset of the tests using a grammar-style search string "reload and brains and Markov", basing both branches off the local repo up one directory, and overriding buildOptions with a custom one before building:
 ```
 python contest.py -s "reload and brains and Markov" ../ development mybranch \
 "cp ~/custom/buildOptions.txt . && python pythonTools/mbuild.py -g make && make -j24" mabe
