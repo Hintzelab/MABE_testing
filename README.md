@@ -41,16 +41,19 @@ version of MABE with the older version of MABE.
 ### Usage
 ```
 $ python mtest.py -h
-usage: mtest.py [-h] [-f] [-s SUBSET] [branch] [commit]
+usage: contest.py [-h] [-ls] [-s SUBSET]
+                  [repo] [branch1] [branch2] [makeCommand] [exeName]
 
 positional arguments:
-  branch
-  commit
+  repo
+  branch1
+  branch2
+  makeCommand
+  exeName
 
 optional arguments:
   -h, --help            show this help message and exit
-  -f, --force           force new download and compile
-  -nb, --nobuild        skips the build step, (if already built)
+  -ls, --list           list all available tests found
   -s SUBSET, --subset SUBSET
                         test filter expression: "defaults and not settings"
 ```
@@ -59,8 +62,6 @@ optional arguments:
 Download MABE_testing into your MABE repo
 
 ```
-git clone https://github.com/hintzelab/mabe mymabe
-cd mymabe
 git clone https://github.com/hintzelab/mabe_testing
 cd mabe_testing
 ```
