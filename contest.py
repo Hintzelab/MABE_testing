@@ -51,6 +51,7 @@ def main():
     parser.add_argument('exeName', type=str,     nargs='?', default=None)
     parser.add_argument('-ls','--list', action='store_true', required = False, default = False, help='list all available tests found')
     parser.add_argument('-s','--subset', type=str, default='', help='test filter expression: "defaults and not settings"')
+    parser.add_argument('-r','--runonly', action='store_true', required = False, default = False, help="assumes baseline and testline are already existing & built")
     args = parser.parse_args()
     noneTotal = 0
     if args.repo is None: noneTotal += 1
@@ -70,7 +71,8 @@ def main():
         print("running pytest.main")
         utils.helpers.exe_name = args.exeName
         utils.helpers.EXE = ".{}{}".format(utils.helpers.slash,utils.helpers.exe_name)
-        compile_default_projects(args)
+        if not args.runonly:
+          compile_default_projects(args)
         subsetTests = '' if not len(args.subset) else '-k "'+args.subset+'"'
         pytest.main(shlex.split("--color=yes --tb=line -v {subset}".format(subset=subsetTests)))
 
