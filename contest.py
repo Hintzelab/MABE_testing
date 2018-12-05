@@ -96,6 +96,7 @@ def compile_default_projects(args):
             repo.heads[0].set_commit(commit)
             repo.heads[0].checkout(force=True)
         cd(eachRepo)
+        shutil.copyfile(".travis.buildOptions.txt", "buildOptions.txt")
         print("building {}".format(eachRepo), flush=True)
         call_build(args.makeCommand)
         cd("..")
