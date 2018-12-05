@@ -12,10 +12,10 @@ from utils.helpers import thisTestName, repoDiffForDifference, repoDiffForSimila
 
 savingParams =  ' ARCHIVIST_LODWAP-dataSequence :10 ARCHIVIST_LODWAP-organismsSequence :10 ARCHIVIST_LODWAP-terminateAfter 0 ARCHIVIST_DEFAULT-writeSnapshotDataFiles 1 ARCHIVIST_DEFAULT-writeSnapshotOrganismsFiles 1 ARCHIVIST_DEFAULT-snapshotOrganismsSequence :10 ARCHIVIST_DEFAULT-snapshotDataSequence :10'
 
-brainTestString = EXE+' -p BRAIN-brainType {brainT} GLOBAL-initPop "MASTER = {initPop}" GLOBAL-updates {updates}'
+brainTestString = EXE+' -p BRAIN-brainType {brainT} GLOBAL-initPop "{initPop}" GLOBAL-updates {updates}'
 brainTestStringWithSaving = brainTestString + savingParams
 
-testString = EXE+' -p GLOBAL-initPop "MASTER = {initPop}" GLOBAL-updates {updates}'
+testString = EXE+' -p GLOBAL-initPop "{initPop}" GLOBAL-updates {updates}'
 testStringWithSaving = testString + savingParams
 
 generate_default_csv_files_RAN = False

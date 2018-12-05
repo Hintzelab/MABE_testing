@@ -36,27 +36,26 @@ def test_screen_randseed_random_inconsistency():
         cd('..')
     repoDiffForDifference('screen-settings-randseed-random-A')
 
-## Test randomSeed -1 produces expected different output from 2 consecutive runs
+## Test randomSeed 32 produces expected different output from 2 consecutive runs
 @pytest.mark.parametrize('testDir',[dirname_baseline, dirname_testline], ids=['baseline','testline'])
-def test_screen_randseed_nonrandom(testDir):
-    for eachdir in [dirname_baseline, dirname_testline]: ## loop through each of baseline and testline and generate the files for later diffing
-        cd(this_repo_path)
-        cd(eachdir)
-        ## Create 2 files both with random seed
-        runCmdAndSaveOutput(runStr.format(seed='-1'), filename='screen-settings-randseed-random-A' )
-        runCmdAndSaveOutput(runStr.format(seed='-1'), filename='screen-settings-randseed-random-B' )
-        cd('..')
-    diffForSimilarity(testDir+'screen-settings-randseed-nonrandom-A',
-                      testDir+'screen-settings-randseed-nonrandom-B',
-                      outfilename="diff-"+testDir+"-screen-settings-randseed-nonrandom-A")
+def test_screen_randseed_nonrandom_consecutive_runs(testDir):
+    #for eachdir in [dirname_baseline, dirname_testline]: ## loop through each of baseline and testline and generate the files for later diffing
+    cd(this_repo_path)
+    cd(testDir)
+    ## Create 2 files both with random seed
+    runCmdAndSaveOutput(runStr.format(seed='32'), filename='screen-settings-randseed-nonrandom-consecutive-runs-A' )
+    runCmdAndSaveOutput(runStr.format(seed='32'), filename='screen-settings-randseed-nonrandom-consecutive-runs-B' )
+    cd('..')
+    diffForSimilarity(os.path.join(testDir,'screen-settings-randseed-nonrandom-consecutive-runs-A'),
+                      os.path.join(testDir,'screen-settings-randseed-nonrandom-consecutive-runs-B'),
+                      outfilename="diff-"+testDir+"-screen-settings-randseed-nonrandom-consecutive-runs-A")
 
-## Test randomSeed -1 between baseline and testline
+## Test randomSeed 32 between baseline and testline
 def test_screen_randseed_nonrandom_consistency():
     for eachdir in [dirname_baseline, dirname_testline]: ## loop through each of baseline and testline and generate the files for later diffing
         cd(this_repo_path)
         cd(eachdir)
         ## Create 2 files both with random seed
-        runCmdAndSaveOutput(runStr.format(seed='-1'), filename='screen-settings-randseed-random-A' )
-        runCmdAndSaveOutput(runStr.format(seed='-1'), filename='screen-settings-randseed-random-B' )
+        runCmdAndSaveOutput(runStr.format(seed='32'), filename='screen-settings-randseed-nonrandom-consistency' )
         cd('..')
-    repoDiffForSimilarity('screen-settings-randseed-nonrandom-A')
+    repoDiffForSimilarity('screen-settings-randseed-nonrandom-consistency')
